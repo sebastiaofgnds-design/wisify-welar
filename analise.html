@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELAR - Análise de Sinistro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" type="image/png">
+    
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --primary-blue-dark: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-border: #334155;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a202c 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: var(--dark-card);
+            border-right: 1px solid var(--dark-border);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        .sidebar-logo img {
+            width: 32px;
+            height: 32px;
+        }
+        .sidebar-logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-blue);
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu > li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: var(--primary-blue);
+            color: var(--text-light);
+        }
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .header-info {
+            flex: 1;
+        }
+        .header-info h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .header-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-blue-dark);
+        }
+        .btn-secondary {
+            background: var(--dark-card);
+            color: var(--text-light);
+            border: 1px solid var(--dark-border);
+        }
+        .btn-secondary:hover {
+            background: var(--dark-border);
+        }
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        /* STATUS BADGE */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .status-badge.concluido {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .status-badge.pendente {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        /* CARDS */
+        .card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .card-title i {
+            font-size: 1.25rem;
+            color: var(--secondary-blue);
+        }
+        .card-title .collapse-icon {
+            margin-left: auto;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .card-title .collapse-icon.collapsed {
+            transform: rotate(180deg);
+        }
+        .card-content {
+            transition: max-height 0.3s ease;
+            overflow: hidden;
+        }
+        .card-content.collapsed {
+            max-height: 0;
+        }
+        
+        /* BENEFIT ANALYSIS - ATUALIZADO */
+        .benefit-analysis-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .benefit-analysis-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--secondary-blue);
+        }
+        .benefit-status-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .benefit-status {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .benefit-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .benefit-detail-item {
+            margin-bottom: 1rem;
+        }
+        .benefit-detail-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .benefit-detail-value {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-light);
+        }
+        .benefit-flags {
+            margin-top: 1.5rem;
+        }
+        .benefit-flag {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--secondary-blue);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* PRELIMINARY DECISION */
+        .decision-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .decision-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--secondary-blue);
+        }
+        .decision-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+        .decision-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .decision-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        /* VEHICLE INFO */
+        .vehicle-info {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .vehicle-image {
+            width: 150px;
+            height: 100px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            border: 1px solid var(--dark-border);
+        }
+        .vehicle-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .detail-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        /* GALLERY */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .gallery-image {
+            aspect-ratio: 1;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid var(--dark-border);
+            transition: transform 0.2s;
+        }
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+        /* DAMAGE TABLE */
+        .damage-table-container {
+            position: relative;
+        }
+        .damage-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .damage-table th,
+        .damage-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        .damage-table th {
+            background: var(--dark-card);
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .damage-table td {
+            color: var(--text-muted);
+        }
+        .damage-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .severity-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .severity-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        .severity-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        /* ASSOCIATE AND VEHICLE DATA */
+        .associate-vehicle-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .associate-vehicle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--secondary-blue);
+        }
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .data-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        /* BO DATA */
+        .bo-info {
+            margin-bottom: 1.5rem;
+        }
+        .bo-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .info-description {
+            background: var(--dark-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--secondary-blue);
+            margin-top: 1rem;
+        }
+        .info-description h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+        .info-description p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        /* FLAGS AND ALERTS */
+        .flags-container {
+            margin-top: 1.5rem;
+        }
+        .flag-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--warning);
+        }
+        .flag-item i {
+            color: var(--warning);
+            font-size: 1.25rem;
+        }
+        .flag-content h5 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-light);
+        }
+        .flag-content p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        /* DOCUMENTS */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            border: 1px solid var(--dark-border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .document-item:hover {
+            background: var(--dark-border);
+        }
+        .document-item i {
+            font-size: 2rem;
+            color: var(--secondary-blue);
+            margin-bottom: 0.75rem;
+        }
+        .document-item span {
+            font-weight: 500;
+            text-align: center;
+        }
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            position: relative;
+            width: 90%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-image-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-image-container:active {
+            cursor: grabbing;
+        }
+        .modal-image {
+            max-width: none;
+            max-height: none;
+            object-fit: contain;
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
+        }
+        .modal-controls {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1001;
+        }
+        .modal-control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            backdrop-filter: blur(5px);
+        }
+        .modal-control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            backdrop-filter: blur(5px);
+            z-index: 1001;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        /* LOADING */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--dark-border);
+            border-top: 3px solid var(--secondary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* ERROR MESSAGE */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* TOOLTIP */
+        .tooltip-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tooltip-icon {
+            margin-left: 0.5rem;
+            color: var(--text-muted);
+            cursor: help;
+            font-size: 1rem;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--dark-card);
+            color: var(--text-light);
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid var(--dark-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 0.875rem;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--dark-border) transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* EXPORT BUTTONS */
+        .export-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+            background: var(--primary-blue);
+            color: white;
+        }
+        .export-btn:hover {
+            background: var(--primary-blue-dark);
+        }
+        .export-btn i {
+            font-size: 1rem;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 250px;
+            }
+            
+            .vehicle-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefit-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+                padding: 1rem;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+            
+            .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefit-status-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <img src="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" alt="WELAR">
+                <div>
+                    <h1>WELAR</h1>
+                    <small style="color: var(--text-muted);">Análise de Sinistros</small>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="https://wisify.welar.com.br"><i class="ri-dashboard-line"></i> Todas as Análises</a></li>
+                <li><a href="https://wisify.welar.com.br/nova-analise"><i class="ri-add-circle-line"></i> Criar Análise</a></li>
+                <li><a href="#" class="active"><i class="ri-file-search-line"></i> Visualizar Análise</a></li>
+            </ul>
+        </div>
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- LOADING STATE -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <span>Carregando análise...</span>
+            </div>
+            
+            <!-- ERROR MESSAGE -->
+            <div id="error-container" style="display: none;"></div>
+            
+            <!-- CONTENT -->
+            <div id="content" style="display: none;">
+                <!-- HEADER -->
+                <div class="content-header">
+                    <div class="header-info">
+                        <h1 id="analysis-title">Detalhes do Sinistro</h1>
+                        <p id="analysis-subtitle">Análise completa do sinistro com IA</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" id="btn-edit" onclick="editarAnalise()">
+                            <i class="ri-edit-line"></i> Editar
+                        </button>
+                        <button class="btn btn-success" id="btn-download" onclick="baixarAnalise()">
+                            <i class="ri-download-line"></i> Baixar
+                        </button>
+                    </div>
+                </div>
+                <!-- STATUS -->
+                <div id="status-badge" class="status-badge">
+                    <i class="ri-check-circle-line"></i>
+                    <span>Análise Concluída</span>
+                </div>
+                
+                <!-- BENEFIT ANALYSIS SECTION - ATUALIZADA -->
+                <div class="card benefit-analysis-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-shield-check-line"></i>
+                            Análise de Benefício
+                        </h2>
+                    </div>
+                    <div class="benefit-status-container">
+                        <div class="benefit-status" id="benefit-status">APROVADO</div>
+                    </div>
+                    <div class="benefit-details">
+                        <div class="benefit-detail-item">
+                            <div class="benefit-detail-label">Motivo da Decisão</div>
+                            <div class="benefit-detail-value" id="benefit-reason">Análise compatível com documentos e fotos apresentados. Sem inconsistências críticas.</div>
+                        </div>
+                        <div class="benefit-detail-item">
+                            <div class="benefit-detail-label">Observações</div>
+                            <div class="benefit-detail-value" id="benefit-observations">Recomenda-se acompanhamento do reparo para validar qualidade.</div>
+                        </div>
+                        <!-- NOVO CAMPO: Confiabilidade dos Dados Recebidos -->
+                        <div class="benefit-detail-item">
+                            <div class="benefit-detail-label">
+                                Confiabilidade dos Dados Recebidos:
+                                <div class="tooltip-container">
+                                    <i class="ri-question-line tooltip-icon"></i>
+                                    <span class="tooltip-text">Esse índice mostra a qualidade geral dos dados (arquivos, fotos e informações) enviados para a análise deste evento.</span>
+                                </div>
+                            </div>
+                            <div class="benefit-detail-value" id="data-reliability">94%</div>
+                        </div>
+                    </div>
+                    <div class="benefit-flags">
+                        <div class="benefit-detail-label">Flags de Atenção</div>
+                        <div id="benefit-flags-container">
+                            <span class="benefit-flag">Validar documentação</span>
+                            <span class="benefit-flag">Acompanhamento pós-reparo</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PRELIMINARY DECISION -->
+                <div class="card decision-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-trophy-line"></i>
+                            Decisão Preliminar
+                        </h2>
+                    </div>
+                    <div class="decision-content">
+                        <div class="decision-label" id="decision-category">Tentativa de Reparo</div>
+                        <div class="decision-description" id="decision-description">
+                            Com base na análise dos documentos e imagens, recomenda-se reparo do veículo. 
+                            A dinâmica é compatível e não há inconsistências críticas.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- BO DATA -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-file-text-line"></i>
+                            Dados do B.O
+                            <i class="ri-arrow-up-s-line collapse-icon" onclick="toggleCard('bo-data')"></i>
+                        </h2>
+                    </div>
+                    <div id="bo-data" class="card-content">
+                        <div class="bo-info">
+                            <div class="bo-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Número do B.O</span>
+                                    <span class="detail-value" id="bo-number">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Local da Ocorrência</span>
+                                    <span class="detail-value" id="bo-location">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Data da Ocorrência</span>
+                                    <span class="detail-value" id="bo-date">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Teve Vítimas</span>
+                                    <span class="detail-value" id="bo-victims">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Causa Presumida</span>
+                                    <span class="detail-value" id="bo-cause">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Assistência Utilizada</span>
+                                    <span class="detail-value" id="bo-assistance">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-description">
+                                <h4>Dinâmica do Acidente</h4>
+                                <p id="bo-dynamics">-</p>
+                            </div>
+                            
+                            <div class="info-description">
+                                <h4>Histórico da Ocorrência</h4>
+                                <p id="bo-history">-</p>
+                            </div>
+                            
+                            <div class="info-description">
+                                <h4>Resumo Executivo</h4>
+                                <p id="bo-summary">-</p>
+                            </div>
+                            <div class="info-description">
+                                <h4>Termo de relato pelo Condutor</h4>
+                                <p id="bo-termo">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ASSOCIATE AND VEHICLE DATA -->
+                <div class="card associate-vehicle-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-user-car-line"></i>
+                            Dados do Condutor e Veículo
+                        </h2>
+                    </div>
+                    <div class="data-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Nome Completo</span>
+                            <span class="detail-value" id="associate-name">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Validade CNH</span>
+                            <span class="detail-value" id="associate-cnh-validity">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">CPF</span>
+                            <span class="detail-value" id="associate-cpf">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status CNH</span>
+                            <span class="detail-value" id="associate-cnh-status">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Categoria CNH</span>
+                            <span class="detail-value" id="associate-cnh-category">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Atividade Remunerada</span>
+                            <span class="detail-value" id="associate-paid-activity">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-grid" style="margin-top: 1.5rem;">
+                        <div class="detail-item">
+                            <span class="detail-label">Placa</span>
+                            <span class="detail-value" id="vehicle-plate-detail">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data de vencimento do licenciamento</span>
+                            <span class="detail-value" id="vehicle-license-expiry">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Chassi</span>
+                            <span class="detail-value" id="vehicle-chassis-detail">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status Licenciamento</span>
+                            <span class="detail-value" id="vehicle-license-status">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Renavam</span>
+                            <span class="detail-value" id="vehicle-renavam">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Alienação Fiduciária</span>
+                            <span class="detail-value" id="vehicle-financing">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-description" style="margin-top: 1.5rem;">
+                        <h4>Observações</h4>
+                        <p id="associate-vehicle-observations">Nenhuma observação</p>
+                    </div>
+                </div>
+                
+                <!-- VEHICLE INFO -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-car-line"></i>
+                            Informações do Veículo
+                        </h2>
+                    </div>
+                    <div class="vehicle-info">
+                        <img id="vehicle-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Crect width='150' height='100' fill='%23334155'/%3E%3Ctext x='75' y='50' font-family='Arial' font-size='12' fill='%2394a3b8' text-anchor='middle' dy='.3em'%3EVeículo%3C/text%3E%3C/svg%3E" alt="Foto do veículo" class="vehicle-image">
+                        <div class="vehicle-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Marca/Modelo</span>
+                                <span class="detail-value" id="vehicle-model">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Placa</span>
+                                <span class="detail-value" id="vehicle-plate">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Chassi</span>
+                                <span class="detail-value" id="vehicle-chassis">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cor</span>
+                                <span class="detail-value" id="vehicle-color">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Quilometragem</span>
+                                <span class="detail-value" id="vehicle-mileage">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Combustível</span>
+                                <span class="detail-value" id="vehicle-fuel">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- GALLERY -->
+                    <div class="card-header" style="margin-bottom: 1rem; margin-top: 1rem;">
+                        <h3 class="card-title">
+                            <i class="ri-image-line"></i>
+                            Galeria de Fotos
+                        </h3>
+                    </div>
+                    <div id="image-gallery" class="image-gallery">
+                        <!-- Images will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- DAMAGE TABLE -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-tools-line"></i>
+                            Tabela de Danos
+                        </h2>
+                    </div>
+                    <div class="damage-table-container">
+                        <table class="damage-table" id="damage-table">
+                            <thead>
+                                <tr>
+                                    <th>Componente</th>
+                                    <th>Tipo de Dano</th>
+                                    <th>Ação Recomendada</th>
+                                    <th>Severidade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="damage-table-body">
+                                <!-- Damage data will be loaded here -->
+                            </tbody>
+                        </table>
+                        <!-- NOVOS BOTÕES DE EXPORTAÇÃO -->
+                        <div class="export-buttons">
+                            <button class="export-btn" onclick="exportDamageTable('csv')">
+                                <i class="ri-file-excel-2-line"></i> Exportar CSV
+                            </button>
+                            <button class="export-btn" onclick="exportDamageTable('xml')">
+                                <i class="ri-file-code-line"></i> Exportar XML
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FLAGS -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-flag-line"></i>
+                            Flags para revisão
+                        </h2>
+                    </div>
+                    <div id="flags-container" class="flags-container">
+                        <!-- Flags will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- ANALYSIS INFO -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-information-line"></i>
+                            Informações da Análise
+                        </h2>
+                    </div>
+                    <div class="data-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Analista Responsável</span>
+                            <span class="detail-value" id="meta-analyst">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email Analista</span>
+                            <span class="detail-value" id="meta-email">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data da Análise</span>
+                            <span class="detail-value" id="meta-date">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Versão do Sistema</span>
+                            <span class="detail-value" id="meta-version">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DOCUMENTS -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="ri-file-list-line"></i>
+                            Documentos anexados
+                        </h2>
+                    </div>
+                    <div class="documents-grid">
+                        <div class="document-item" onclick="openDocument('cnh')">
+                            <i class="ri-file-user-line"></i>
+                            <span>CNH</span>
+                        </div>
+                        <div class="document-item" onclick="openDocument('crlv')">
+                            <i class="ri-file-paper-line"></i>
+                            <span>CRLV</span>
+                        </div>
+                        <div class="document-item" onclick="openDocument('bo')">
+                            <i class="ri-file-text-line"></i>
+                            <span>B.O</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL FOR IMAGES -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="ri-close-line"></i>
+            </button>
+            <div class="modal-image-container" id="modal-image-container">
+                <img id="modal-image" class="modal-image" src="" alt="">
+            </div>
+            <div class="modal-controls">
+                <button class="modal-control-btn" onclick="zoomIn()">
+                    <i class="ri-zoom-in-line"></i>
+                </button>
+                <button class="modal-control-btn" onclick="zoomOut()">
+                    <i class="ri-zoom-out-line"></i>
+                </button>
+                <button class="modal-control-btn" onclick="resetZoom()">
+                    <i class="ri-refresh-line"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // CONFIGURAÇÃO SUPABASE - ATUALIZADA
+        const SUPABASE_URL = 'https://orpkucozcuvepcnewudm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycGt1Y296Y3V2ZXBjbmV3dWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NjQxMzYsImV4cCI6MjA3NjU0MDEzNn0.5Xlc_ZphXnzILbAyQCkPaJyDh39zH_jq12sFAFuVpww';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // VARIÁVEIS GLOBAIS
+        let currentAnalysis = null;
+        let currentEventCode = null;
+        let damageData = [];
+        let modalZoomLevel = 1;
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop;
+        let currentUser = null;
+        
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            setupModalDrag();
+        });
+        
+        // VERIFICAÇÃO DE AUTENTICAÇÃO
+        async function checkAuthentication() {
+            try {
+                // Verificar se há um usuário logado no localStorage
+                const userJson = localStorage.getItem('welar_user');
+                const sessionToken = localStorage.getItem('welar_session');
+                
+                if (!userJson || !sessionToken) {
+                    // Redirecionar para página de login
+                    redirectToLogin();
+                    return;
+                }
+                
+                currentUser = JSON.parse(userJson);
+                
+                // Verificar se a sessão ainda é válida no Supabase
+                const { data, error } = await supabase
+                    .from('sessoes_usuario')
+                    .select('*')
+                    .eq('token_sessao', sessionToken)
+                    .eq('usuario_id', currentUser.id)
+                    .eq('ativa', true)
+                    .gte('data_expiracao', new Date().toISOString())
+                    .single();
+                
+                if (error || !data) {
+                    // Sessão inválida, redirecionar para login
+                    redirectToLogin();
+                    return;
+                }
+                
+                // Sessão válida, continuar com o carregamento da página
+                initializePage();
+                
+            } catch (error) {
+                console.error('Erro na verificação de autenticação:', error);
+                redirectToLogin();
+            }
+        }
+        
+        // REDIRECIONAR PARA PÁGINA DE LOGIN
+        function redirectToLogin() {
+            window.location.href = 'https://wisify.welar.com.br/login';
+        }
+        
+        async function initializePage() {
+            try {
+                // Pegar código do evento da URL usando tanto codigo= quanto codigo_evento=
+                const urlParams = new URLSearchParams(window.location.search);
+                currentEventCode = urlParams.get('codigo') || urlParams.get('codigo_evento');
+                
+                if (!currentEventCode) {
+                    showError('Código do evento não informado na URL');
+                    return;
+                }
+                console.log('Carregando análise para:', currentEventCode);
+                await loadAnalysis();
+                
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+                showError('Erro ao carregar a página');
+            }
+        }
+        
+        async function loadAnalysis() {
+            try {
+                showLoading(true);
+                hideError();
+                
+                // Buscar dados consolidados
+                const { data: consolidacao, error: consolidacaoError } = await supabase
+                    .from('consolidacao_final')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode)
+                    .single();
+                    
+                if (consolidacaoError) {
+                    console.error('Erro ao buscar consolidação:', consolidacaoError);
+                    showError('Análise não encontrada');
+                    return;
+                }
+                
+                // Buscar arquivos/imagens
+                const { data: arquivos, error: arquivosError } = await supabase
+                    .from('arquivos_originais')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode);
+                    
+                if (arquivosError) {
+                    console.error('Erro ao buscar arquivos:', arquivosError);
+                }
+                
+                // Buscar análise de imagens do veículo
+                const { data: analiseImagens, error: analiseImagensError } = await supabase
+                    .from('analise_imagens_veiculo')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode);
+                    
+                if (analiseImagensError) {
+                    console.error('Erro ao buscar análise de imagens:', analiseImagensError);
+                }
+                
+                currentAnalysis = {
+                    consolidacao,
+                    arquivos: arquivos || [],
+                    analiseImagensVeiculo: analiseImagens || []
+                };
+                
+                // Renderizar a página
+                renderAnalysisData();
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Erro ao carregar análise:', error);
+                showError('Erro ao carregar dados da análise');
+                showLoading(false);
+            }
+        }
+        
+        function renderAnalysisData() {
+            const data = currentAnalysis.consolidacao;
+            
+            // HEADER
+            document.getElementById('analysis-title').textContent = `Detalhes do Sinistro ${data.codigo_evento}`;
+            document.getElementById('analysis-subtitle').textContent = `Criado em: ${formatDate(data.data_analise)}`;
+            
+            // STATUS
+            updateStatus(data);
+            
+            // BENEFIT ANALYSIS
+            updateBenefitAnalysis(data);
+            
+            // DECISION
+            updateDecision(data);
+            
+            // BO DATA
+            updateBoData(data);
+            
+            // ASSOCIATE AND VEHICLE DATA
+            updateAssociateVehicleData(data);
+            
+            // VEHICLE INFO
+            updateVehicleInfo(data);
+            
+            // DAMAGE TABLE
+            updateDamageTable(data);
+            
+            // FLAGS
+            updateFlags(data);
+            
+            // META INFO
+            updateMetaInfo(data);
+            
+            // GALLERY
+            updateGallery();
+        }
+        
+        // FUNÇÃO PARA ATUALIZAR A SEÇÃO DE ANÁLISE DE BENEFÍCIO
+        function updateBenefitAnalysis(data) {
+            // Status do Benefício
+            const benefitStatus = document.getElementById('benefit-status');
+            const status = data.status_beneficio || '-';
+            benefitStatus.textContent = status;
+            
+            // Adicionar classe de acordo com o status
+            benefitStatus.className = 'benefit-status';
+            if (status === 'APROVADO') {
+                benefitStatus.style.color = 'var(--success)';
+            } else if (status === 'NEGADO') {
+                benefitStatus.style.color = 'var(--danger)';
+            } else if (status === 'SINDICANCIA') {
+                benefitStatus.style.color = 'var(--warning)';
+            }
+            
+            // Motivo
+            document.getElementById('benefit-reason').textContent = data.motivo_beneficio || 'Sem motivo informado';
+            
+            // Observações
+            document.getElementById('benefit-observations').textContent = data.observacoes_beneficio || 'Nenhuma observação';
+            
+            // NOVO CAMPO: Confiabilidade dos Dados Recebidos
+            const dataReliability = document.getElementById('data-reliability');
+            const reliabilityScore = data.stats_score_total_analise || 0;
+            dataReliability.textContent = `${reliabilityScore}%`;
+            
+            // Adicionar classe de acordo com o score
+            dataReliability.className = 'benefit-detail-value';
+            if (reliabilityScore >= 80) {
+                dataReliability.style.color = 'var(--success)';
+            } else if (reliabilityScore >= 50) {
+                dataReliability.style.color = 'var(--warning)';
+            } else {
+                dataReliability.style.color = 'var(--danger)';
+            }
+            
+            // Flags
+            const flagsContainer = document.getElementById('benefit-flags-container');
+            flagsContainer.innerHTML = '';
+            
+            if (data.flags_atencao && Array.isArray(data.flags_atencao) && data.flags_atencao.length > 0) {
+                data.flags_atencao.forEach(flag => {
+                    const flagElement = document.createElement('span');
+                    flagElement.className = 'benefit-flag';
+                    flagElement.textContent = flag;
+                    flagsContainer.appendChild(flagElement);
+                });
+            } else {
+                flagsContainer.innerHTML = '<span style="opacity: 0.7;">Nenhuma flag de atenção</span>';
+            }
+        }
+        
+        function updateStatus(data) {
+            const statusBadge = document.getElementById('status-badge');
+            statusBadge.innerHTML = `
+                <i class="ri-check-circle-line"></i>
+                <span>Análise Concluída</span>
+            `;
+            statusBadge.className = 'status-badge concluido';
+        }
+        
+        function updateDecision(data) {
+            const decisionLabel = document.getElementById('decision-category');
+            const status = data.decisao_categoria || 'Tentativa de Reparo';
+            decisionLabel.textContent = status;
+            
+            // Adicionar classe de acordo com o status
+            decisionLabel.className = 'decision-label';
+            if (status === 'Perda Total') {
+                decisionLabel.style.color = 'var(--danger)';
+            } else if (status === 'Tentativa de Reparo') {
+                decisionLabel.style.color = 'var(--warning)';
+            } else {
+                decisionLabel.style.color = 'var(--success)';
+            }
+            
+            document.getElementById('decision-description').textContent = data.decisao_justificativa || 'Sem descrição disponível';
+        }
+        
+        function updateBoData(data) {
+            document.getElementById('bo-number').textContent = data.bo_numero || '-';
+            document.getElementById('bo-location').textContent = data.bo_local_ocorrencia || '-';
+            document.getElementById('bo-date').textContent = formatDate(data.bo_data_ocorrencia) || '-';
+            document.getElementById('bo-victims').textContent = data.bo_teve_vitimas ? 'Sim' : 'Não';
+            document.getElementById('bo-cause').textContent = data.bo_causa_presumida || '-';
+            document.getElementById('bo-assistance').textContent = data.bo_assistencia_utilizada || '-';
+            document.getElementById('bo-dynamics').textContent = data.bo_dinamica_acidente || '-';
+            document.getElementById('bo-history').textContent = data.bo_historico_ocorrencia || '-';
+            document.getElementById('bo-summary').textContent = data.bo_resumo_executivo || '-';
+            document.getElementById('bo-termo').textContent = data.termo_relato_associado || '-';
+        }
+        
+        function updateAssociateVehicleData(data) {
+            // Dados do Associado
+            document.getElementById('associate-name').textContent = data.associado_nome_completo || '-';
+            document.getElementById('associate-cnh-validity').textContent = formatDate(data.associado_data_validade_cnh) || '-';
+            document.getElementById('associate-cpf').textContent = formatCPF(data.associado_cpf) || '-';
+            document.getElementById('associate-cnh-status').textContent = data.associado_status_habilitacao || '-';
+            document.getElementById('associate-cnh-category').textContent = data.associado_categoria_habilitacao || '-';
+            document.getElementById('associate-paid-activity').textContent = data.associado_atividade_remunerada ? 'Sim' : 'Não';
+            
+            // Dados do Veículo
+            document.getElementById('vehicle-plate-detail').textContent = data.veiculo_placa || '-';
+            document.getElementById('vehicle-license-expiry').textContent = formatDate(data.veiculo_data_vencimento_licenciamento) || '-';
+            document.getElementById('vehicle-chassis-detail').textContent = data.veiculo_chassi || '-';
+            document.getElementById('vehicle-license-status').textContent = data.veiculo_status_licenciamento || '-';
+            document.getElementById('vehicle-renavam').textContent = data.veiculo_renavam || '-';
+            document.getElementById('vehicle-financing').textContent = data.veiculo_alienacao_fiduciaria ? 'Sim' : 'Não';
+            
+            // Observações combinadas
+            const associateObs = data.associado_observacoes || 'Nenhuma observação';
+            const vehicleObs = data.veiculo_observacoes || 'Nenhuma observação';
+            const combinedObs = `Associado: ${associateObs}<br>Veículo: ${vehicleObs}`;
+            document.getElementById('associate-vehicle-observations').innerHTML = combinedObs;
+        }
+        
+        function updateVehicleInfo(data) {
+            document.getElementById('vehicle-model').textContent = data.veiculo_marca_modelo || '-';
+            document.getElementById('vehicle-plate').textContent = data.veiculo_placa || '-';
+            document.getElementById('vehicle-chassis').textContent = data.veiculo_chassi || '-';
+            document.getElementById('vehicle-color').textContent = data.veiculo_cor || '-';
+            document.getElementById('vehicle-mileage').textContent = '-'; // Não tem no schema
+            document.getElementById('vehicle-fuel').textContent = data.veiculo_combustivel || '-';
+            
+            // Atualizar imagem do veículo - usar a primeira imagem da galeria como capa
+            const vehicleImages = currentAnalysis.arquivos.filter(arquivo => 
+                arquivo.categoria_arquivo === 'FOTO_VEICULO'
+            );
+            
+            if (vehicleImages.length > 0) {
+                const vehicleImage = document.getElementById('vehicle-image');
+                // Usar URL do bucket em vez de base64
+                vehicleImage.src = vehicleImages[0].url_arquivo || `data:image/${vehicleImages[0].tipo_arquivo.toLowerCase()};base64,${vehicleImages[0].base64_data}`;
+            }
+        }
+        
+        function updateDamageTable(data) {
+            const tableBody = document.getElementById('damage-table-body');
+            tableBody.innerHTML = '';
+            
+            // Verificar se existem componentes danificados no JSON
+            let componentes = [];
+            try {
+                if (data.componentes_danificados_json) {
+                    // Verificar se é uma string ou já é um objeto
+                    if (typeof data.componentes_danificados_json === 'string') {
+                        componentes = JSON.parse(data.componentes_danificados_json);
+                    } else if (typeof data.componentes_danificados_json === 'object') {
+                        componentes = data.componentes_danificados_json;
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao parsear JSON de componentes:', e);
+            }
+            
+            // Se não encontrou componentes na consolidação, tenta buscar na análise de imagens
+            if (componentes.length === 0 && currentAnalysis.analiseImagensVeiculo && currentAnalysis.analiseImagensVeiculo.length > 0) {
+                // Extrair os dados de danos de cada análise de imagem
+                currentAnalysis.analiseImagensVeiculo.forEach(analise => {
+                    try {
+                        if (analise.dados_extraidos) {
+                            const dados = analise.dados_extraidos;
+                            // Verificar diferentes estruturas possíveis para os danos
+                            if (dados.danos && Array.isArray(dados.danos)) {
+                                componentes = componentes.concat(dados.danos);
+                            } else if (dados.componentes && Array.isArray(dados.componentes)) {
+                                componentes = componentes.concat(dados.componentes);
+                            } else if (dados.damage && Array.isArray(dados.damage)) {
+                                componentes = componentes.concat(dados.damage);
+                            } else if (dados.parts && Array.isArray(dados.parts)) {
+                                componentes = componentes.concat(dados.parts);
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Erro ao processar dados extraídos da análise de imagem:', e);
+                    }
+                });
+            }
+            
+            // Armazenar os dados globalmente
+            damageData = [...componentes];
+            
+            // Se não encontrou componentes, exibir mensagem
+            if (componentes.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        Nenhum dado de danos encontrado
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            componentes.forEach((item, index) => {
+                const row = createDamageRow(item, index);
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function createDamageRow(item, index) {
+            const row = document.createElement('tr');
+            
+            // Tenta diferentes nomes de propriedades para o componente
+            const componente = item.componente || item.parte || item.part || item.component || item.name || '-';
+            
+            // Tenta diferentes nomes de propriedades para o tipo de dano
+            const tipoDano = item.tipo_dano || item.dano || item.damage || item.description || item.type || '-';
+            
+            // Tenta diferentes nomes de propriedades para a ação - CORRIGIDO
+            const acao = item.acao_recomendada || item.acao || item.recomendacao || item.action || item.recommendation || 'Avaliar';
+            
+            // Tenta diferentes nomes de propriedades para a severidade
+            const severidade = item.severidade || item.severity || item.score || 0;
+            
+            const severityClass = getSeverityClass(severidade);
+            const severityText = getSeverityText(severidade);
+            
+            row.innerHTML = `
+                <td>${componente}</td>
+                <td>${tipoDano}</td>
+                <td>${acao}</td>
+                <td><span class="severity-badge ${severityClass}">${severityText}</span></td>
+            `;
+            
+            return row;
+        }
+        
+        function getSeverityClass(severity) {
+            if (severity >= 7) return 'severity-high';
+            if (severity >= 4) return 'severity-medium';
+            return 'severity-low';
+        }
+        
+        function getSeverityText(severity) {
+            return `${severity}/10`;
+        }
+        
+        function updateFlags(data) {
+            const container = document.getElementById('flags-container');
+            container.innerHTML = '';
+            
+            // Array para armazenar todas as flags
+            let flags = [];
+            
+            // 1. Verificar flags_atencao_presencial_json
+            try {
+                if (data.flags_atencao_presencial_json) {
+                    const flagsPresencial = typeof data.flags_atencao_presencial_json === 'string' 
+                        ? JSON.parse(data.flags_atencao_presencial_json)
+                        : data.flags_atencao_presencial_json;
+                    
+                    if (Array.isArray(flagsPresencial)) {
+                        flags = flags.concat(flagsPresencial.map(item => ({
+                            icon: 'ri-alert-line',
+                            title: 'Flag de Atenção',
+                            description: item
+                        })));
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao parsear flags_atencao_presencial_json:', e);
+            }
+            
+            // 2. Verificar inconsistencias_criticas_json
+            try {
+                if (data.inconsistencias_criticas_json) {
+                    const inconsistenciasCriticas = typeof data.inconsistencias_criticas_json === 'string'
+                        ? JSON.parse(data.inconsistencias_criticas_json)
+                        : data.inconsistencias_criticas_json;
+                    
+                    if (Array.isArray(inconsistenciasCriticas)) {
+                        flags = flags.concat(inconsistenciasCriticas.map(item => ({
+                            icon: 'ri-error-warning-line',
+                            title: 'Inconsistência Crítica',
+                            description: item
+                        })));
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao parsear inconsistencias_criticas_json:', e);
+            }
+            
+            // 3. Verificar motivos_vistoria_json
+            try {
+                if (data.motivos_vistoria_json) {
+                    const motivosVistoria = typeof data.motivos_vistoria_json === 'string'
+                        ? JSON.parse(data.motivos_vistoria_json)
+                        : data.motivos_vistoria_json;
+                    
+                    if (Array.isArray(motivosVistoria)) {
+                        flags = flags.concat(motivosVistoria.map(item => ({
+                            icon: 'ri-tools-line',
+                            title: 'Motivo de Vistoria',
+                            description: item
+                        })));
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao parsear motivos_vistoria_json:', e);
+            }
+            
+            // 4. Verificar limitacoes_analise_json
+            try {
+                if (data.limitacoes_analise_json) {
+                    const limitacoesAnalise = typeof data.limitacoes_analise_json === 'string'
+                        ? JSON.parse(data.limitacoes_analise_json)
+                        : data.limitacoes_analise_json;
+                    
+                    if (Array.isArray(limitacoesAnalise)) {
+                        flags = flags.concat(limitacoesAnalise.map(item => ({
+                            icon: 'ri-information-line',
+                            title: 'Limitação da Análise',
+                            description: item
+                        })));
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao parsear limitacoes_analise_json:', e);
+            }
+            
+            // 5. Verificar suspeitas_fraude_json
+            try {
+                if (data.suspeitas_fraude_json) {
+                    const suspeitasFraude = typeof data.suspeitas_fraude_json === 'string'
+                        ? JSON.parse(data.suspeitas_fraude_json)
+                        : data.suspeitas_fraude_json;
+                    
+                    if (Array.isArray(suspeitasFraude)) {
+                        flags = flags.concat(suspeitasFraude.map(item => ({
+                            icon: 'ri-shield-cross-line',
+                            title: 'Suspeita de Fraude',
+                            description: item
+                        })));
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao parsear suspeitas_fraude_json:', e);
+            }
+            
+            // Limitar a quantidade de flags para não sobrecarregar a interface
+            if (flags.length > 5) {
+                flags = flags.slice(0, 5);
+                flags.push({
+                    icon: 'ri-more-line',
+                    title: 'Mais Flags',
+                    description: `Existem mais ${flags.length - 5} flags não exibidas`
+                });
+            }
+            
+            // Se não encontrou flags, exibir mensagem
+            if (flags.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 1rem;">Nenhuma flag para revisão</p>';
+                return;
+            }
+            
+            // Renderizar as flags
+            flags.forEach(flag => {
+                const flagElement = document.createElement('div');
+                flagElement.className = 'flag-item';
+                flagElement.innerHTML = `
+                    <i class="${flag.icon}"></i>
+                    <div class="flag-content">
+                        <h5>${flag.title}</h5>
+                        <p>${flag.description}</p>
+                    </div>
+                `;
+                container.appendChild(flagElement);
+            });
+        }
+        
+        function updateMetaInfo(data) {
+            document.getElementById('meta-analyst').textContent = data.meta_analista_responsavel || '-';
+            document.getElementById('meta-email').textContent = data.meta_email_analista || '-';
+            document.getElementById('meta-date').textContent = formatDateTime(data.meta_data_analise) || '-';
+            document.getElementById('meta-version').textContent = data.meta_versao_sistema || '-';
+        }
+        
+        function updateGallery() {
+            const gallery = document.getElementById('image-gallery');
+            gallery.innerHTML = '';
+            
+            const vehicleImages = currentAnalysis.arquivos.filter(arquivo => 
+                arquivo.categoria_arquivo === 'FOTO_VEICULO'
+            );
+            
+            vehicleImages.forEach((arquivo, index) => {
+                const img = document.createElement('img');
+                // Usar URL do bucket em vez de base64
+                img.src = arquivo.url_arquivo || `data:image/${arquivo.tipo_arquivo.toLowerCase()};base64,${arquivo.base64_data}`;
+                img.alt = `Foto do veículo ${index + 1}`;
+                img.className = 'gallery-image';
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\' viewBox=\'0 0 120 120\'%3E%3Crect width=\'120\' height=\'120\' fill=\'23334155\'/%3E%3Ctext x=\'60\' y=\'60\' font-family=\'Arial\' font-size=\'12\' fill=\'2394a3b8\' text-anchor=\'middle\' dy=\'.3em\'%3EImagem não disponível%3C/text%3E%3C/svg%3E';
+                };
+                img.onclick = () => openImageModal(img.src);
+                gallery.appendChild(img);
+            });
+            
+            if (vehicleImages.length === 0) {
+                gallery.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">Nenhuma imagem disponível</p>';
+            }
+        }
+        
+        // FUNÇÃO DE EXPORTAÇÃO DA TABELA DE DANOS
+        function exportDamageTable(format) {
+            if (damageData.length === 0) {
+                alert('Não há dados de danos para exportar');
+                return;
+            }
+            
+            let content = '';
+            let filename = `tabela_danos_${currentEventCode}`;
+            
+            if (format === 'csv') {
+                // Cabeçalho CSV
+                content = 'Componente,Tipo de Dano,Ação Recomendada,Severidade\n';
+                
+                // Dados CSV
+                damageData.forEach(item => {
+                    const componente = item.componente || item.parte || item.part || item.component || item.name || '-';
+                    const tipoDano = item.tipo_dano || item.dano || item.damage || item.description || item.type || '-';
+                    const acao = item.acao_recomendada || item.acao || item.recomendacao || item.action || item.recommendation || 'Avaliar';
+                    const severidade = item.severidade || item.severity || item.score || 0;
+                    
+                    content += `"${componente}","${tipoDano}","${acao}","${severidade}"\n`;
+                });
+                
+                filename += '.csv';
+            } else if (format === 'xml') {
+                // Cabeçalho XML
+                content = '<?xml version="1.0" encoding="UTF-8"?>\n';
+                content += '<tabela_danos>\n';
+                content += `  <codigo_evento>${currentEventCode}</codigo_evento>\n`;
+                content += `  <data_exportacao>${new Date().toISOString()}</data_exportacao>\n`;
+                content += '  <itens>\n';
+                
+                // Dados XML
+                damageData.forEach(item => {
+                    const componente = item.componente || item.parte || item.part || item.component || item.name || '-';
+                    const tipoDano = item.tipo_dano || item.dano || item.damage || item.description || item.type || '-';
+                    const acao = item.acao_recomendada || item.acao || item.recomendacao || item.action || item.recommendation || 'Avaliar';
+                    const severidade = item.severidade || item.severity || item.score || 0;
+                    
+                    content += '    <item>\n';
+                    content += `      <componente>${escapeXml(componente)}</componente>\n`;
+                    content += `      <tipo_dano>${escapeXml(tipoDano)}</tipo_dano>\n`;
+                    content += `      <acao_recomendada>${escapeXml(acao)}</acao_recomendada>\n`;
+                    content += `      <severidade>${severidade}</severidade>\n`;
+                    content += '    </item>\n';
+                });
+                
+                content += '  </itens>\n';
+                content += '</tabela_danos>';
+                
+                filename += '.xml';
+            }
+            
+            // Criar blob e fazer download
+            const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Função auxiliar para escapar caracteres XML
+        function escapeXml(unsafe) {
+            return unsafe.replace(/[<>&'"]/g, function (c) {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '\'': return '&apos;';
+                    case '"': return '&quot;';
+                }
+            });
+        }
+        
+        // UTILITY FUNCTIONS
+        function formatDate(dateString) {
+            if (!dateString) return null;
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return null;
+            const date = new Date(dateString);
+            return date.toLocaleString('pt-BR');
+        }
+        
+        function formatCPF(cpf) {
+            if (!cpf) return null;
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+            document.getElementById('content').style.display = show ? 'none' : 'block';
+        }
+        
+        function showError(message) {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `
+                <div class="error-message">
+                    <i class="ri-error-warning-line"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            errorContainer.style.display = 'block';
+            showLoading(false);
+        }
+        
+        function hideError() {
+            document.getElementById('error-container').style.display = 'none';
+        }
+        
+        // TOGLE CARD FUNCTION
+        function toggleCard(cardId) {
+            const cardContent = document.getElementById(cardId);
+            const icon = document.querySelector(`#${cardId}`).previousElementSibling.querySelector('.collapse-icon');
+            
+            if (cardContent.classList.contains('collapsed')) {
+                cardContent.classList.remove('collapsed');
+                icon.classList.remove('collapsed');
+            } else {
+                cardContent.classList.add('collapsed');
+                icon.classList.add('collapsed');
+            }
+        }
+        
+        // MODAL FUNCTIONS
+        function openImageModal(src) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            modalImage.src = src;
+            modal.classList.add('active');
+            resetZoom();
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('active');
+        }
+        
+        // ZOOM FUNCTIONS
+        function zoomIn() {
+            modalZoomLevel += 0.25;
+            if (modalZoomLevel > 3) modalZoomLevel = 3;
+            applyZoom();
+        }
+        
+        function zoomOut() {
+            modalZoomLevel -= 0.25;
+            if (modalZoomLevel < 0.5) modalZoomLevel = 0.5;
+            applyZoom();
+        }
+        
+        function resetZoom() {
+            modalZoomLevel = 1;
+            applyZoom();
+        }
+        
+        function applyZoom() {
+            const modalImage = document.getElementById('modal-image');
+            modalImage.style.transform = `scale(${modalZoomLevel})`;
+        }
+        
+        // DRAG FUNCTIONALITY
+        function setupModalDrag() {
+            const modalContainer = document.getElementById('modal-image-container');
+            
+            modalContainer.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.pageX - modalContainer.offsetLeft;
+                startY = e.pageY - modalContainer.offsetTop;
+                scrollLeft = modalContainer.scrollLeft;
+                scrollTop = modalContainer.scrollTop;
+                modalContainer.style.cursor = 'grabbing';
+            });
+            
+            modalContainer.addEventListener('mouseleave', () => {
+                isDragging = false;
+                modalContainer.style.cursor = 'grab';
+            });
+            
+            modalContainer.addEventListener('mouseup', () => {
+                isDragging = false;
+                modalContainer.style.cursor = 'grab';
+            });
+            
+            modalContainer.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - modalContainer.offsetLeft;
+                const y = e.pageY - modalContainer.offsetTop;
+                const walkX = (x - startX) * 1.5;
+                const walkY = (y - startY) * 1.5;
+                modalContainer.scrollLeft = scrollLeft - walkX;
+                modalContainer.scrollTop = scrollTop - walkY;
+            });
+        }
+        
+        // DOCUMENT FUNCTIONS - CORRIGIDO
+        function openDocument(type) {
+            const documento = currentAnalysis.arquivos.find(arquivo => 
+                arquivo.categoria_arquivo === type.toUpperCase()
+            );
+            
+            if (documento) {
+                // Abrir em nova janela com a URL do bucket
+                if (documento.url_arquivo) {
+                    window.open(documento.url_arquivo, '_blank');
+                } else if (documento.base64_data) {
+                    // Fallback para base64 se URL não estiver disponível
+                    const newWindow = window.open();
+                    newWindow.document.write(`
+                        <html>
+                            <head><title>Documento ${type.toUpperCase()}</title></head>
+                            <body style="margin: 0; padding: 20px; background: #f5f5f5;">
+                                <embed src="data:application/pdf;base64,${documento.base64_data}" 
+                                       width="100%" height="100%" type="application/pdf">
+                            </body>
+                        </html>
+                    `);
+                } else {
+                    alert(`Documento ${type.toUpperCase()} não possui dados disponíveis`);
+                }
+            } else {
+                alert(`Documento ${type.toUpperCase()} não encontrado`);
+            }
+        }
+        
+        // ACTION FUNCTIONS - URLs ATUALIZADAS
+        function editarAnalise() {
+            const url = `https://wisify.welar.com.br/editar-analise?codigo=${currentEventCode}`;
+            window.location.href = url;
+        }
+        
+        function baixarAnalise() {
+            const url = `https://wisify.welar.com.br/relatorio-analise?codigo=${currentEventCode}`;
+            window.open(url, '_blank');
+        }
+        
+        // CLOSE MODAL ON OUTSIDE CLICK
+        document.getElementById('image-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // KEYBOARD SHORTCUTS
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+        
+        console.log('WELAR - Página de Exibição de Análise v1.3 carregada');
+    </script>
+</body>
+</html>
