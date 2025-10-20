@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELAR - Edição de Análise v1.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="icon" href="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" type="image/png">
+    
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --primary-blue-dark: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-blue: #60a5fa;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-border: #334155;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a202c 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* SIDEBAR - Estilo unificado */
+        .sidebar {
+            width: 280px;
+            background: var(--dark-card);
+            border-right: 1px solid var(--dark-border);
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        .sidebar-logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-blue);
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu > li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: var(--primary-blue);
+            color: var(--text-light);
+        }
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .header-info h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .header-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-blue-dark);
+        }
+        .btn-secondary {
+            background: var(--dark-card);
+            color: var(--text-light);
+            border: 1px solid var(--dark-border);
+        }
+        .btn-secondary:hover {
+            background: var(--dark-border);
+        }
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        /* CARD */
+        .card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .card-title i {
+            font-size: 1.25rem;
+            color: var(--secondary-blue);
+        }
+        /* FORM ELEMENTS */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--dark-border);
+            border-radius: 0.5rem;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+        }
+        .form-textarea { resize: vertical; min-height: 100px; }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        /* VEHICLE INFO */
+        .vehicle-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        .vehicle-image-upload {
+            position: relative;
+            width: 200px;
+            height: 150px;
+            border: 2px dashed var(--dark-border);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--dark-bg);
+        }
+        .vehicle-image-upload:hover { border-color: var(--secondary-blue); }
+        .vehicle-image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        /* DAMAGE TABLE */
+        .damage-table-container { overflow-x: auto; }
+        .damage-table { width: 100%; min-width: 1200px; border-collapse: collapse; background: var(--dark-bg); }
+        .damage-table th, .damage-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--dark-border); }
+        .damage-table th { background: var(--dark-card); font-weight: 600; color: var(--text-light); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .damage-input { background: var(--dark-bg); border: 1px solid var(--dark-border); color: var(--text-light); padding: 0.5rem; border-radius: 0.25rem; width: 100%; font-size: 0.875rem; }
+        .damage-input:focus { border-color: var(--secondary-blue); outline: none; }
+        
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--dark-border);
+            background: var(--dark-card);
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-icon:hover { background: var(--dark-border); color: var(--text-light); }
+        /* GALLERY */
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .gallery-item { position: relative; aspect-ratio: 1; border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--dark-border); cursor: pointer; transition: transform 0.2s; }
+        .gallery-item:hover { transform: scale(1.05); }
+        .gallery-image { width: 100%; height: 100%; object-fit: cover; }
+        /* DECISIONS */
+        .decision-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+        .decision-option { padding: 1.5rem; border: 2px solid var(--dark-border); border-radius: 0.75rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+        .decision-option:hover { border-color: var(--secondary-blue); }
+        .decision-option.selected { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .decision-option.recommended { box-shadow: 0 0 15px rgba(96, 165, 250, 0.5); border-color: var(--accent-blue); }
+        .decision-icon { font-size: 2rem; margin-bottom: 0.5rem; color: var(--secondary-blue); }
+        .decision-title { font-weight: 600; margin-bottom: 0.25rem; }
+        .decision-description { font-size: 0.875rem; color: var(--text-muted); }
+        /* MODAL (com zoom/pan) */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            width: 90vw; height: 90vh; display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .modal-image-container {
+            width: 100%; height: 100%; overflow: hidden; border-radius: 0.5rem;
+        }
+        .modal-image {
+            width: 100%; height: 100%; object-fit: contain;
+            transform-origin: center center; transition: transform 0.2s ease-out; cursor: grab;
+        }
+        .modal-image.panning { cursor: grabbing; }
+        .modal-controls {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(5px);
+            border: 1px solid var(--dark-border); padding: 0.5rem; border-radius: 0.5rem;
+            display: flex; gap: 0.5rem;
+        }
+        .modal-controls button {
+            background: var(--dark-card); color: var(--text-light); border: 1px solid var(--dark-border);
+            width: 40px; height: 40px; border-radius: 0.25rem; font-size: 1.25rem; cursor: pointer;
+        }
+        .modal-close {
+            position: absolute; top: 10px; right: 10px; background: white; color: black; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        /* LOADING */
+        .loading { display: flex; align-items: center; justify-content: center; padding: 3rem; color: var(--text-muted); }
+        .spinner {
+            width: 32px; height: 32px; border: 3px solid var(--dark-border); border-top: 3px solid var(--secondary-blue);
+            border-radius: 50%; animation: spin 1s linear infinite; margin-right: 1rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .vehicle-section, .decision-section { grid-template-columns: 1fr; }
+            .sidebar { width: 250px; }
+        }
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .sidebar { width: 100%; order: 2; }
+            .main-content { order: 1; padding: 1rem; }
+            .content-header { flex-direction: column; align-items: flex-start; }
+            .header-actions { width: 100%; }
+        }
+        /* Estilo para campos obrigatórios */
+        .required::after {
+            content: " *";
+            color: var(--danger);
+        }
+        /* Estilo para checkbox e radio */
+        .form-checkbox, .form-radio {
+            margin-right: 0.5rem;
+        }
+        .checkbox-group, .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        /* Estilo para tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--dark-border);
+            margin-bottom: 1.5rem;
+        }
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            color: var(--text-light);
+        }
+        .tab.active {
+            color: var(--secondary-blue);
+            border-bottom-color: var(--secondary-blue);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Estilo para a seção de análise do benefício */
+        .benefit-analysis {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-left: 4px solid var(--secondary-blue);
+        }
+        .benefit-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-aprovado {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        .status-negado {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        .status-sindicancia {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+        .confidence-meter {
+            height: 8px;
+            background: var(--dark-border);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: var(--secondary-blue);
+            border-radius: 9999px;
+        }
+        .flag-item {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .confidence-input {
+            width: 100px;
+            margin-left: 1rem;
+        }
+        /* Estilo para o modal de motivo de modificação */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content-modification {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .modal-close-btn:hover {
+            color: var(--text-light);
+        }
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+             <div class="sidebar-logo">
+                <img src="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" alt="WELAR Logo" style="width: 40px; height: 40px; object-fit: cover; border-radius: 0 !important;">
+                <div>
+                    <h1>WELAR</h1>
+                    <small style="color: var(--text-muted);">Edição de Análise v1.1</small>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="https://wisify.welar.com.br"><i class="ri-dashboard-line"></i> Todas as Análises</a></li>
+                <li><a href="https://wisify.welar.com.br/nova-analise"><i class="ri-add-circle-line"></i> Criar Análise</a></li>
+                <li><a href="https://wisify.welar.com.br/editar-analise" class="active"><i class="ri-edit-line"></i> Editar Análise</a></li>
+            </ul>
+        </div>
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- LOADING STATE -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <span>Carregando dados para edição...</span>
+            </div>
+            <!-- CONTENT -->
+            <div id="content" style="display: none;">
+                <!-- HEADER -->
+                <div class="content-header">
+                    <div class="header-info">
+                        <h1 id="analysis-title">Editando Análise de Sinistro</h1>
+                        <p id="analysis-subtitle">Última modificação: Nunca</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="window.history.back()">
+                            <i class="ri-arrow-left-line"></i> Voltar
+                        </button>
+                        <button class="btn btn-success" id="btn-save" onclick="showModificationModal()">
+                            <i class="ri-save-line"></i> Salvar Tudo
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- BENEFIT ANALYSIS SECTION (CORRIGIDA) -->
+                <div class="card benefit-analysis" id="section-benefit">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="ri-shield-star-line"></i>Análise do Benefício</h2>
+                        <div id="benefit-status-container"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Status do Benefício</label>
+                            <select class="form-select" id="status_beneficio">
+                                <option value="">Selecione...</option>
+                                <option value="APROVADO">Aprovado</option>
+                                <option value="NEGADO">Negado</option>
+                                <option value="SINDICANCIA">Sindicância</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Motivo da Decisão</label>
+                        <textarea class="form-textarea" id="motivo_beneficio"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-textarea" id="observacoes_beneficio"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Flags de Atenção</label>
+                        <div id="flags-container"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data da Decisão</label>
+                        <input type="datetime-local" class="form-input" id="data_decisao_beneficio">
+                    </div>
+                </div>
+                
+                <!-- VEHICLE SECTION -->
+                <div class="card" id="section-vehicle">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="ri-car-line"></i>Informações do Veículo</h2>
+                    </div>
+                    <div class="vehicle-section">
+                        <div class="vehicle-image-upload" onclick="document.getElementById('vehicle-image-input').click();">
+                            <img id="vehicle-image" class="vehicle-image-preview" style="display: none;">
+                            <div id="vehicle-upload-placeholder">
+                                <i class="ri-image-add-line" style="font-size: 2rem; color: var(--text-muted);"></i>
+                                <p style="color: var(--text-muted); text-align: center; margin-top: 0.5rem;">Clique para adicionar foto de capa</p>
+                            </div>
+                            <input type="file" id="vehicle-image-input" style="display: none;" accept="image/*">
+                        </div>
+                        <div class="vehicle-details">
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Marca/Modelo</label><input type="text" class="form-input" id="veiculo_marca_modelo"></div>
+                                <div class="form-group"><label class="form-label">Placa</label><input type="text" class="form-input" id="veiculo_placa"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Chassi</label><input type="text" class="form-input" id="veiculo_chassi"></div>
+                                <div class="form-group"><label class="form-label">Cor</label><input type="text" class="form-input" id="veiculo_cor"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Ano Fabricação</label><input type="number" class="form-input" id="veiculo_ano_fabricacao"></div>
+                                <div class="form-group"><label class="form-label">Ano Modelo</label><input type="number" class="form-input" id="veiculo_ano_modelo"></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Status do Licenciamento</label>
+                                    <input type="text" class="form-input" id="veiculo_status_licenciamento" placeholder="Status do licenciamento">
+                                </div>
+                                <div class="form-group"><label class="form-label">Data Vencimento Licenciamento</label><input type="date" class="form-input" id="veiculo_data_vencimento_licenciamento"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Observação do Veículo</label>
+                                <textarea class="form-textarea" id="veiculo_observacoes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ASSOCIATE SECTION -->
+                <div class="card" id="section-associate">
+                    <div class="card-header"><h2 class="card-title"><i class="ri-user-line"></i>Dados do Associado</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label required">Nome Completo</label><input type="text" class="form-input" id="associado_nome_completo"></div>
+                        <div class="form-group"><label class="form-label required">CPF</label><input type="text" class="form-input" id="associado_cpf"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Data de Validade da CNH</label><input type="date" class="form-input" id="associado_data_validade_cnh"></div>
+                        <div class="form-group"><label class="form-label">Data de Nascimento</label><input type="date" class="form-input" id="associado_data_nascimento"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Status da Habilitação</label>
+                            <input type="text" class="form-input" id="associado_status_habilitacao" placeholder="Status da habilitação">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Atividade Remunerada?</label>
+                            <div class="radio-group">
+                                <input type="radio" id="atividade_sim" name="atividade_remunerada" value="true" class="form-radio">
+                                <label for="atividade_sim">Sim</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="atividade_nao" name="atividade_remunerada" value="false" class="form-radio">
+                                <label for="atividade_nao">Não</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- B.O. SECTION -->
+                <div class="card" id="section-bo">
+                    <div class="card-header"><h2 class="card-title"><i class="ri-file-text-line"></i>Dados do Boletim de Ocorrência</h2></div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" onclick="openTab(event, 'tab-bo-basic')">Dados Básicos</div>
+                        <div class="tab" onclick="openTab(event, 'tab-bo-details')">Detalhes da Ocorrência</div>
+                        <div class="tab" onclick="openTab(event, 'tab-bo-docs')">Documentação</div>
+                    </div>
+                    
+                    <div id="tab-bo-basic" class="tab-content active">
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label required">Número do B.O.</label><input type="text" class="form-input" id="bo_numero"></div>
+                            <div class="form-group"><label class="form-label">Unidade de Registro</label><input type="text" class="form-input" id="bo_unidade_registro"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label required">Data da Ocorrência</label><input type="date" class="form-input" id="bo_data_ocorrencia"></div>
+                            <div class="form-group"><label class="form-label required">Hora da Ocorrência</label><input type="time" class="form-input" id="bo_hora_ocorrencia"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required">Local da Ocorrência</label>
+                            <input type="text" class="form-input" id="bo_local_ocorrencia">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label required">Município</label><input type="text" class="form-input" id="bo_municipio"></div>
+                            <div class="form-group">
+                                <label class="form-label">Natureza da Ocorrência</label>
+                                <input type="text" class="form-input" id="bo_natureza_ocorrencia" placeholder="Natureza da ocorrência">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Causa Presumida</label><input type="text" class="form-input" id="bo_causa_presumida"></div>
+                            <div class="form-group">
+                                <label class="form-label">Teve Vítimas?</label>
+                                <div class="radio-group">
+                                    <input type="radio" id="vitimas_sim" name="teve_vitimas" value="true" class="form-radio">
+                                    <label for="vitimas_sim">Sim</label>
+                                </div>
+                                <div class="radio-group">
+                                    <input type="radio" id="vitimas_nao" name="teve_vitimas" value="false" class="form-radio">
+                                    <label for="vitimas_nao">Não</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="tab-bo-details" class="tab-content">
+                        <div class="form-group">
+                            <label class="form-label">Veículos Envolvidos</label>
+                            <input type="text" class="form-input" id="bo_veiculos_envolvidos">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dinâmica do Acidente</label>
+                            <textarea class="form-textarea" id="bo_dinamica_acidente"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Danos Listados no B.O.</label>
+                            <textarea class="form-textarea" id="bo_danos_listados"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Histórico da Ocorrência</label>
+                            <textarea class="form-textarea" id="bo_historico_ocorrencia"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Observações Importantes</label>
+                            <textarea class="form-textarea" id="bo_observacoes_importantes"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div id="tab-bo-docs" class="tab-content">
+                        <div class="form-group">
+                            <label class="form-label">Assistência Utilizada</label>
+                            <textarea class="form-textarea" id="bo_assistencia_utilizada"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Termo de Vistoria do B.O.</label>
+                            <textarea class="form-textarea" id="bo_termo_vistoria"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Resumo Executivo</label>
+                            <textarea class="form-textarea" id="bo_resumo_executivo"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Termo de Relato Preenchido pelo Associado</label>
+                            <textarea class="form-textarea" id="termo_relato_associado"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- DAMAGE ANALYSIS SECTION -->
+                <div class="card" id="section-damages">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="ri-tools-line"></i>Análise de Danos</h2>
+                        <button class="btn-icon" onclick="addDamageRow()" title="Adicionar novo dano"><i class="ri-add-line"></i></button>
+                    </div>
+                    <div class="damage-table-container">
+                        <table class="damage-table" id="damage-table">
+                            <thead>
+                                <tr>
+                                    <th>Componente</th>
+                                    <th>Tipo de Dano</th>
+                                    <th>Ação Recomendada</th>
+                                    <th>Severidade (1-10)</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="damage-table-body"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <label class="form-label">Danos - Justificativa de Qualidade</label>
+                        <textarea class="form-textarea" id="danos_justificativa_qualidade"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Danos - Resumo da Análise Visual</label>
+                        <textarea class="form-textarea" id="danos_resumo_analise_visual"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Decisão - Justificativa</label>
+                        <textarea class="form-textarea" id="decisao_justificativa"></textarea>
+                    </div>
+                </div>
+                <!-- IMAGE GALLERY SECTION -->
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title"><i class="ri-image-line"></i>Galeria de Imagens</h2></div>
+                    <div id="image-gallery" class="image-gallery"></div>
+                </div>
+                <!-- DECISION SECTION -->
+                <div class="card" id="section-decision">
+                    <div class="card-header"><h2 class="card-title"><i class="ri-trophy-line"></i>Decisão</h2></div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria da Decisão</label>
+                        <div class="decision-section">
+                            <div class="decision-option" data-decision="Tentativa de Reparo">
+                                <div class="decision-icon"><i class="ri-tools-line"></i></div>
+                                <div class="decision-title">Tentativa de Reparo</div>
+                            </div>
+                            <div class="decision-option" data-decision="Perda Total">
+                                <div class="decision-icon"><i class="ri-delete-bin-line"></i></div>
+                                <div class="decision-title">Perda Total</div>
+                            </div>
+                            <div class="decision-option" data-decision="Sindicância">
+                                <div class="decision-icon"><i class="ri-search-line"></i></div>
+                                <div class="decision-title">Sindicância</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FINAL SAVE ACTION -->
+                <div class="card" style="background: var(--dark-bg); border-color: transparent;">
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button class="btn btn-success" style="padding: 1rem 2.5rem; font-size: 1rem;" onclick="showModificationModal()">
+                            <i class="ri-check-double-line"></i> Finalizar e Salvar Edição
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL FOR IMAGES -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-image-container">
+                <img id="modal-image" class="modal-image" src="">
+            </div>
+            <div class="modal-controls">
+                <button onclick="modalZoom.zoomIn()" title="Zoom In"><i class="ri-zoom-in-line"></i></button>
+                <button onclick="modalZoom.zoomOut()" title="Zoom Out"><i class="ri-zoom-out-line"></i></button>
+                <button onclick="modalZoom.reset()" title="Reset Zoom"><i class="ri-refresh-line"></i></button>
+            </div>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="ri-close-line"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- MODAL FOR MODIFICATION REASON -->
+    <div id="modification-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content-modification">
+            <div class="modal-header">
+                <h3 class="modal-title">Motivo da Modificação</h3>
+                <button class="modal-close-btn" onclick="closeModificationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label required">Motivo da Modificação</label>
+                    <select class="form-select" id="motivo_modificacao">
+                        <option value="">Selecione um motivo...</option>
+                        <option value="ERRO_IA">Erro da IA</option>
+                        <option value="DADO_INCOMPLETO">Dado Incompleto</option>
+                        <option value="CORRECAO_HUMANA">Correção Humana</option>
+                        <option value="ATUALIZACAO_INFO">Atualização de Informação</option>
+                        <option value="AJUSTE_MANUAL">Ajuste Manual</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observação (opcional)</label>
+                    <textarea class="form-textarea" id="observacao_modificacao" placeholder="Adicione uma observação sobre a modificação..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModificationModal()">Cancelar</button>
+                <button class="btn btn-success" onclick="saveAnalysisWithReason()">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // CONFIGURAÇÃO SUPABASE - ATUALIZADA COM AS NOVAS CREDENCIAIS
+        const SUPABASE_URL = 'https://orpkucozcuvepcnewudm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycGt1Y296Y3V2ZXBjbmV3dWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NjQxMzYsImV4cCI6MjA3NjU0MDEzNn0.5Xlc_ZphXnzILbAyQCkPaJyDh39zH_jq12sFAFuVpww';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // VARIÁVEIS GLOBAIS
+        let currentAnalysis = null;
+        let currentEventCode = null;
+        let selectedDecision = null;
+        let currentUser = null;
+        
+        // --- Lógica do Modal de Zoom ---
+        const modalZoom = {
+            element: null,
+            scale: 1,
+            x: 0,
+            y: 0,
+            isPanning: false,
+            start: { x: 0, y: 0 },
+            init() {
+                this.element = document.getElementById('modal-image');
+                const container = document.querySelector('.modal-image-container');
+                container.addEventListener('wheel', this.onWheel.bind(this));
+                container.addEventListener('mousedown', this.onMouseDown.bind(this));
+                container.addEventListener('mousemove', this.onMouseMove.bind(this));
+                container.addEventListener('mouseup', this.onMouseUp.bind(this));
+                container.addEventListener('mouseleave', this.onMouseUp.bind(this));
+            },
+            updateTransform() {
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+            },
+            zoom(factor) {
+                const newScale = this.scale * factor;
+                this.scale = Math.max(0.5, Math.min(newScale, 5)); // Limita o zoom
+                this.updateTransform();
+            },
+            zoomIn() { this.zoom(1.2); },
+            zoomOut() { this.zoom(1 / 1.2); },
+            reset() {
+                this.scale = 1; this.x = 0; this.y = 0;
+                this.updateTransform();
+            },
+            onWheel(e) {
+                e.preventDefault();
+                this.zoom(e.deltaY > 0 ? 1 / 1.1 : 1.1);
+            },
+            onMouseDown(e) {
+                if (e.button !== 0 || this.scale <= 1) return;
+                e.preventDefault();
+                this.isPanning = true;
+                this.element.classList.add('panning');
+                this.start = { x: e.clientX - this.x, y: e.clientY - this.y };
+            },
+            onMouseMove(e) {
+                if (!this.isPanning) return;
+                e.preventDefault();
+                this.x = e.clientX - this.start.x;
+                this.y = e.clientY - this.start.y;
+                this.updateTransform();
+            },
+            onMouseUp(e) {
+                this.isPanning = false;
+                this.element.classList.remove('panning');
+            }
+        };
+        
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            modalZoom.init();
+            checkUserAuthentication();
+            initializePage();
+            setupEventListeners();
+        });
+        
+        // Função para verificar autenticação do usuário e cargo
+        async function checkUserAuthentication() {
+            try {
+                const session = localStorage.getItem('welar_session');
+                const user = JSON.parse(localStorage.getItem('welar_user') || '{}');
+                
+                if (!session || !user.id) {
+                    // Redirecionar para a página de login se não estiver autenticado
+                    window.location.href = 'https://wisify.welar.com.br/login';
+                    return;
+                }
+                
+                // Verificar se a sessão é válida no Supabase
+                const { data: sessao, error } = await supabase
+                    .from('sessoes_usuario')
+                    .select('*')
+                    .eq('token_sessao', session)
+                    .eq('ativa', true)
+                    .eq('usuario_id', user.id)
+                    .gte('data_expiracao', new Date().toISOString())
+                    .single();
+                    
+                if (error || !sessao) {
+                    // Sessão inválida, redirecionar para login
+                    localStorage.removeItem('welar_session');
+                    localStorage.removeItem('welar_user');
+                    window.location.href = 'https://wisify.welar.com.br/login';
+                    return;
+                }
+                
+                // Verificar cargo do usuário
+                const { data: usuario, error: userError } = await supabase
+                    .from('usuarios_sistema')
+                    .select('cargo')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (userError || !usuario) {
+                    console.error('Erro ao verificar cargo do usuário:', userError);
+                    window.location.href = 'https://wisify.welar.com.br/login';
+                    return;
+                }
+                
+                // Verificar se o usuário tem permissão para acessar esta página
+                const allowedRoles = ['ADMIN', 'ANALISTA', 'SUPERVISOR'];
+                if (!allowedRoles.includes(usuario.cargo)) {
+                    alert('Você não tem permissão para acessar esta página.');
+                    window.location.href = 'https://wisify.welar.com.br';
+                    return;
+                }
+                
+                // Armazenar informações do usuário
+                currentUser = {
+                    id: user.id,
+                    cargo: usuario.cargo,
+                    nome: user.nome_completo || 'Usuário',
+                    email: user.email || ''
+                };
+                
+                // Atualizar último acesso
+                await supabase
+                    .from('sessoes_usuario')
+                    .update({ data_ultimo_acesso: new Date().toISOString() })
+                    .eq('id', sessao.id);
+                    
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                // Em caso de erro, redirecionar para login
+                window.location.href = 'https://wisify.welar.com.br/login';
+            }
+        }
+        
+        async function initializePage() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                currentEventCode = urlParams.get('codigo') || urlParams.get('codigo_evento');
+                if (!currentEventCode) return showError('Código do evento não informado na URL');
+                
+                await loadAnalysisForEdit();
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+                showError('Erro ao carregar a página');
+            }
+        }
+        
+        function setupEventListeners() {
+            document.querySelectorAll('.decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.decision-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedDecision = this.dataset.decision;
+                });
+            });
+            
+            // Listener para o campo de status do benefício
+            document.getElementById('status_beneficio').addEventListener('change', function() {
+                updateBenefitStatus(this.value);
+            });
+        }
+        
+        async function loadAnalysisForEdit() {
+            showLoading(true);
+            try {
+                // Carregar apenas dados consolidados (SEM tentar carregar a tabela analise_beneficio)
+                const { data: consolidacao, error: consolidacaoError } = await supabase
+                    .from('consolidacao_final')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode)
+                    .single();
+                
+                if (consolidacaoError) throw consolidacaoError;
+                
+                // Carregar arquivos (imagens) com url_arquivo em vez de base64
+                const { data: arquivos, error: arquivosError } = await supabase
+                    .from('arquivos_originais')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode);
+                
+                if (arquivosError) throw arquivosError;
+                
+                currentAnalysis = { 
+                    consolidacao: consolidacao, 
+                    arquivos: arquivos || [] 
+                };
+                
+                populateForm();
+            } catch (error) {
+                console.error('Erro ao carregar análise:', error);
+                showError('Análise não encontrada ou falha na comunicação.');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function populateForm() {
+            const data = currentAnalysis.consolidacao;
+            
+            // Preencher campos dos dados de benefício DIRETAMENTE da consolidacao_final
+            // Status do benefício
+            const statusElement = document.getElementById('status_beneficio');
+            if (statusElement) {
+                statusElement.value = data.status_beneficio || '';
+                updateBenefitStatus(data.status_beneficio);
+            }
+            
+            // Motivo da decisão
+            const motivoElement = document.getElementById('motivo_beneficio');
+            if (motivoElement) {
+                motivoElement.value = data.motivo_beneficio || '';
+            }
+            
+            // Observações
+            const observacoesElement = document.getElementById('observacoes_beneficio');
+            if (observacoesElement) {
+                observacoesElement.value = data.observacoes_beneficio || '';
+            }
+            
+            // Formatar data para o input datetime-local
+            if (data.data_decisao_beneficio) {
+                const date = new Date(data.data_decisao_beneficio);
+                const formattedDate = date.toISOString().slice(0, 16);
+                const dataDecisaoElement = document.getElementById('data_decisao_beneficio');
+                if (dataDecisaoElement) {
+                    dataDecisaoElement.value = formattedDate;
+                }
+            }
+            
+            // Atualizar flags de atenção
+            updateBenefitFlags(data.flags_atencao || []);
+            
+            // Preencher campos do formulário principal
+            const fields = [
+                'veiculo_marca_modelo', 'veiculo_placa', 'veiculo_chassi', 'veiculo_cor', 
+                'veiculo_ano_fabricacao', 'veiculo_ano_modelo', 'veiculo_status_licenciamento',
+                'veiculo_data_vencimento_licenciamento', 'veiculo_observacoes',
+                'associado_nome_completo', 'associado_cpf', 
+                'associado_data_validade_cnh', 'associado_status_habilitacao', 'associado_data_nascimento',
+                'bo_numero', 'bo_unidade_registro', 'bo_data_ocorrencia', 'bo_hora_ocorrencia',
+                'bo_local_ocorrencia', 'bo_municipio', 'bo_natureza_ocorrencia', 'bo_causa_presumida',
+                'bo_veiculos_envolvidos', 'bo_dinamica_acidente', 'bo_danos_listados',
+                'bo_historico_ocorrencia', 'bo_assistencia_utilizada', 'bo_termo_vistoria',
+                'bo_observacoes_importantes', 'bo_resumo_executivo', 'termo_relato_associado',
+                'danos_justificativa_qualidade', 'danos_resumo_analise_visual', 'decisao_justificativa'
+            ];
+            fields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = data[id] || '';
+                }
+            });
+            
+            // Tratamento especial para campos de radio
+            if (data.bo_teve_vitimas !== undefined) {
+                const radioValue = data.bo_teve_vitimas ? 'true' : 'false';
+                const radioElement = document.querySelector(`input[name="teve_vitimas"][value="${radioValue}"]`);
+                if (radioElement) radioElement.checked = true;
+            }
+            
+            // Campo de atividade remunerada
+            if (data.associado_atividade_remunerada !== undefined) {
+                const radioValue = data.associado_atividade_remunerada ? 'true' : 'false';
+                const radioElement = document.querySelector(`input[name="atividade_remunerada"][value="${radioValue}"]`);
+                if (radioElement) radioElement.checked = true;
+            }
+            
+            const titleElement = document.getElementById('analysis-title');
+            if (titleElement) {
+                titleElement.textContent = `Editando Análise ${data.codigo_evento}`;
+            }
+            
+            const subtitleElement = document.getElementById('analysis-subtitle');
+            if (subtitleElement) {
+                subtitleElement.textContent = `Última modificação: ${formatDateTime(data.meta_data_analise) || 'Nunca'}`;
+            }
+            
+            // Tratamento especial para a decisão - aceitar o formato que vem do Supabase
+            if (data.decisao_categoria) {
+                // Mapeamento entre os formatos - EXPANDIDO PARA ACEITAR VÁRIOS FORMATOS
+                const decisionMap = {
+                    'TENTATIVA_REPARO': 'Tentativa de Reparo',
+                    'PERDA_TOTAL': 'Perda Total',
+                    'SINDICANCIA': 'Sindicância',
+                    'Tentativa de Reparo': 'Tentativa de Reparo',
+                    'Perda Total': 'Perda Total',
+                    'Sindicância': 'Sindicância',
+                    'Tentativa de reparo': 'Tentativa de Reparo',  // minúsculo
+                    'Perda total': 'Perda Total',              // minúsculo
+                    'sindicância': 'Sindicância',              // minúsculo
+                    'Tentativa_de_Reparo': 'Tentativa de Reparo',  // com underline
+                    'Perda_Total': 'Perda Total',              // com underline
+                    'Sindicancia_Investigacao': 'Sindicância'  // com underline
+                };
+                
+                // Normaliza o valor da decisão para comparação
+                const normalizedDecision = String(data.decisao_categoria || '').trim();
+                const displayDecision = decisionMap[normalizedDecision] || normalizedDecision;
+                
+                // Encontrar e selecionar a opção correta
+                const recOption = document.querySelector(`[data-decision="${displayDecision}"]`);
+                if(recOption) {
+                    recOption.classList.add('recommended'); // Destaque para recomendação da IA
+                    recOption.classList.add('selected'); // Pré-seleciona
+                    selectedDecision = displayDecision; // Define a decisão selecionada globalmente
+                }
+            }
+            
+            loadDamageTable();
+            loadImageGallery();
+        }
+        
+        function loadImageGallery() {
+            const gallery = document.getElementById('image-gallery');
+            const placeholder = document.getElementById('vehicle-upload-placeholder');
+            const coverImage = document.getElementById('vehicle-image');
+            
+            if (!gallery || !placeholder || !coverImage) return;
+            
+            gallery.innerHTML = '';
+            
+            const vehicleImages = currentAnalysis.arquivos.filter(a => a.categoria_arquivo === 'FOTO_VEICULO');
+            if (vehicleImages.length > 0) {
+                const firstImageSrc = vehicleImages[0].url_arquivo;
+                coverImage.src = firstImageSrc;
+                coverImage.style.display = 'block';
+                placeholder.style.display = 'none';
+                vehicleImages.forEach((arquivo) => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    galleryItem.innerHTML = `<img src="${arquivo.url_arquivo}" class="gallery-image">`;
+                    galleryItem.onclick = () => openImageModal(arquivo.url_arquivo);
+                    gallery.appendChild(galleryItem);
+                });
+            } else {
+                 coverImage.style.display = 'none';
+                 placeholder.style.display = 'block';
+            }
+        }
+        
+        function loadDamageTable() {
+            const tableBody = document.getElementById('damage-table-body');
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = '';
+            let componentes = [];
+            try {
+                const jsonb = currentAnalysis.consolidacao.componentes_danificados_json;
+                componentes = jsonb ? (typeof jsonb === 'string' ? JSON.parse(jsonb) : jsonb) : [];
+            } catch (e) {
+                console.error("Erro no JSON de danos:", e);
+            }
+            if (componentes.length > 0) {
+                componentes.forEach(item => tableBody.appendChild(createDamageRow(item)));
+            }
+        }
+        
+        function createDamageRow(item = {}) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="damage-input" data-field="componente" value="${item.componente || ''}"></td>
+                <td><input type="text" class="damage-input" data-field="tipo_dano" value="${item.tipo_dano || ''}"></td>
+                <td><input type="text" class="damage-input" data-field="acao_recomendada" value="${item.acao_recomendada || 'Avaliar'}"></td>
+                <td><input type="number" class="damage-input" data-field="severidade" value="${item.severidade || 1}" min="1" max="10"></td>
+                <td><button class="btn-icon" onclick="this.closest('tr').remove()" title="Excluir"><i class="ri-delete-bin-line"></i></button></td>
+            `;
+            return row;
+        }
+        
+        function addDamageRow() {
+            const tableBody = document.getElementById('damage-table-body');
+            if (tableBody) {
+                tableBody.appendChild(createDamageRow());
+            }
+        }
+        
+        function collectFormData() {
+            const formData = {};
+            const fields = [
+                'veiculo_marca_modelo', 'veiculo_placa', 'veiculo_chassi', 'veiculo_cor', 
+                'veiculo_ano_fabricacao', 'veiculo_ano_modelo', 'veiculo_status_licenciamento',
+                'veiculo_data_vencimento_licenciamento', 'veiculo_observacoes',
+                'associado_nome_completo', 'associado_cpf', 
+                'associado_data_validade_cnh', 'associado_status_habilitacao', 'associado_data_nascimento',
+                'bo_numero', 'bo_unidade_registro', 'bo_data_ocorrencia', 'bo_hora_ocorrencia',
+                'bo_local_ocorrencia', 'bo_municipio', 'bo_natureza_ocorrencia', 'bo_causa_presumida',
+                'bo_veiculos_envolvidos', 'bo_dinamica_acidente', 'bo_danos_listados',
+                'bo_historico_ocorrencia', 'bo_assistencia_utilizada', 'bo_termo_vistoria',
+                'bo_observacoes_importantes', 'bo_resumo_executivo', 'termo_relato_associado',
+                'danos_justificativa_qualidade', 'danos_resumo_analise_visual', 'decisao_justificativa'
+            ];
+            fields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    formData[id] = element.value;
+                }
+            });
+            
+            // Coleta valor do radio button para vitimas
+            const teveVitimasRadio = document.querySelector('input[name="teve_vitimas"]:checked');
+            if (teveVitimasRadio) {
+                formData.bo_teve_vitimas = teveVitimasRadio.value === 'true';
+            }
+            
+            // Coleta valor do radio button para atividade remunerada
+            const atividadeRadio = document.querySelector('input[name="atividade_remunerada"]:checked');
+            if (atividadeRadio) {
+                formData.associado_atividade_remunerada = atividadeRadio.value === 'true';
+            }
+            
+            // Coletar dados de benefício
+            const statusElement = document.getElementById('status_beneficio');
+            const motivoElement = document.getElementById('motivo_beneficio');
+            const observacoesElement = document.getElementById('observacoes_beneficio');
+            const dataDecisaoElement = document.getElementById('data_decisao_beneficio');
+            
+            formData.status_beneficio = statusElement ? statusElement.value : '';
+            formData.motivo_beneficio = motivoElement ? motivoElement.value : '';
+            formData.observacoes_beneficio = observacoesElement ? observacoesElement.value : '';
+            formData.data_decisao_beneficio = dataDecisaoElement && dataDecisaoElement.value ? 
+                new Date(dataDecisaoElement.value).toISOString() : null;
+            
+            // Manter flags de atenção existentes
+            formData.flags_atencao = currentAnalysis.consolidacao.flags_atencao || [];
+            
+            // Mapeamento reverso para salvar no formato esperado pelo Supabase - CORRIGIDO
+            const reverseDecisionMap = {
+                'Tentativa de Reparo': 'Tentativa de Reparo',
+                'Perda Total': 'Perda Total',
+                'Sindicância': 'SINDICANCIA'
+            };
+            
+            // Se houver uma decisão selecionada, usa o mapeamento reverso
+            if (selectedDecision) {
+                formData.decisao_categoria = reverseDecisionMap[selectedDecision] || selectedDecision;
+            } else {
+                // Se não houver decisão selecionada, mantém o valor original do banco
+                formData.decisao_categoria = currentAnalysis.consolidacao.decisao_categoria;
+            }
+            
+            // Coleta e formata a tabela de danos
+            formData.componentes_danificados_json = collectAndFormatDamageTable();
+            
+            return formData;
+        }
+        
+        function collectAndFormatDamageTable() {
+            const tableBody = document.getElementById('damage-table-body');
+            if (!tableBody) return '[]';
+            
+            const rows = tableBody.querySelectorAll('tr');
+            const updatedComponentes = [];
+            
+            const originalComponentes = (typeof currentAnalysis.consolidacao.componentes_danificados_json === 'string')
+                ? JSON.parse(currentAnalysis.consolidacao.componentes_danificados_json || '[]')
+                : (currentAnalysis.consolidacao.componentes_danificados_json || []);
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const fullDamageObject = {
+                    componente: "", tipo_dano: "", acao_recomendada: "Avaliar", severidade: 1,
+                    localizacao: "", confirmado_no_bo: false, estimativa_custo: "", severidade_fonte: "Edição Manual",
+                    localizacao_fonte: "Edição Manual", observacoes_tecnicas: "Item editado manualmente.", severidade_justificativa: "",
+                    nivel_confianca_componente: 9, detectado_em_quantas_imagens: 0
+                };
+                const existingData = originalComponentes[i] || {};
+                const itemFromUI = {};
+                row.querySelectorAll('.damage-input').forEach(input => {
+                    const field = input.dataset.field;
+                    itemFromUI[field] = (input.type === 'number') ? parseInt(input.value) || 1 : input.value;
+                });
+                
+                updatedComponentes.push({ ...fullDamageObject, ...existingData, ...itemFromUI });
+            }
+            return JSON.stringify(updatedComponentes);
+        }
+        
+        // Função para exibir o modal de motivo de modificação
+        function showModificationModal() {
+            document.getElementById('modification-modal').style.display = 'flex';
+        }
+        
+        // Função para fechar o modal de motivo de modificação
+        function closeModificationModal() {
+            document.getElementById('modification-modal').style.display = 'none';
+        }
+        
+        // Função para salvar análise com motivo da modificação
+        async function saveAnalysisWithReason() {
+            const motivo = document.getElementById('motivo_modificacao').value;
+            const observacao = document.getElementById('observacao_modificacao').value;
+            
+            if (!motivo) {
+                alert('Por favor, selecione um motivo para a modificação.');
+                return;
+            }
+            
+            closeModificationModal();
+            showLoading(true, "Salvando...");
+            
+            try {
+                const formData = collectFormData();
+                formData.meta_data_analise = new Date().toISOString(); // Atualiza data da edição
+                
+                // Salvar as alterações na tabela consolidacao_final
+                const { error: consolidacaoError } = await supabase
+                    .from('consolidacao_final')
+                    .update(formData)
+                    .eq('codigo_evento', currentEventCode);
+                
+                if (consolidacaoError) throw consolidacaoError;
+                
+                // Registrar as modificações na tabela log_modificacoes
+                // Para cada campo modificado, criar um registro no log
+                const originalData = currentAnalysis.consolidacao;
+                const modifiedFields = [];
+                
+                // Identificar campos modificados
+                Object.keys(formData).forEach(key => {
+                    if (JSON.stringify(formData[key]) !== JSON.stringify(originalData[key])) {
+                        modifiedFields.push({
+                            campo_modificado: key,
+                            valor_anterior: JSON.stringify(originalData[key]),
+                            valor_novo: JSON.stringify(formData[key])
+                        });
+                    }
+                });
+                
+                // Inserir registros na tabela log_modificacoes
+                if (modifiedFields.length > 0) {
+                    const logEntries = modifiedFields.map(field => ({
+                        codigo_evento: currentEventCode,
+                        tipo_analise: 'ASSOCIADO',
+                        tabela_modificada: 'consolidacao_final',
+                        campo_modificado: field.campo_modificado,
+                        valor_anterior: field.valor_anterior,
+                        valor_novo: field.valor_novo,
+                        usuario_id: currentUser.id,
+                        usuario_nome: currentUser.nome,
+                        usuario_email: currentUser.email,
+                        tipo_acao: 'EDICAO',
+                        motivo_modificacao: motivo,
+                        observacao_usuario: observacao
+                    }));
+                    
+                    const { error: logError } = await supabase
+                        .from('log_modificacoes')
+                        .insert(logEntries);
+                    
+                    if (logError) throw logError;
+                }
+                
+                alert('✅ Análise salva com sucesso!');
+                window.location.reload(); // Recarrega para ver os dados salvos
+            } catch (error) {
+                console.error('Erro ao salvar análise:', error);
+                alert('Erro ao salvar análise: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Funções para a seção de análise do benefício
+        function updateBenefitStatus(status) {
+            const statusContainer = document.getElementById('benefit-status-container');
+            if (!statusContainer) return;
+            
+            statusContainer.innerHTML = '';
+            
+            if (status) {
+                const statusElement = document.createElement('span');
+                statusElement.className = `benefit-status status-${status.toLowerCase()}`;
+                statusElement.textContent = status;
+                statusContainer.appendChild(statusElement);
+            }
+        }
+        
+        function updateBenefitFlags(flags) {
+            const flagsContainer = document.getElementById('flags-container');
+            if (!flagsContainer) return;
+            
+            flagsContainer.innerHTML = '';
+            
+            if (flags && flags.length > 0) {
+                flags.forEach(flag => {
+                    const flagElement = document.createElement('span');
+                    flagElement.className = 'flag-item';
+                    flagElement.textContent = flag;
+                    flagsContainer.appendChild(flagElement);
+                });
+            } else {
+                flagsContainer.innerHTML = '<p style="color: var(--text-muted);">Nenhuma flag de atenção identificada</p>';
+            }
+        }
+        
+        // UTILITIES
+        function openImageModal(src) {
+            modalZoom.reset();
+            const modalImage = document.getElementById('modal-image');
+            if (modalImage) {
+                modalImage.src = src;
+                document.getElementById('image-modal').classList.add('active');
+            }
+        }
+        
+        function closeModal() { 
+            const modal = document.getElementById('image-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        function formatDateTime(dateString) {
+            return dateString ? new Date(dateString).toLocaleString('pt-BR') : null;
+        }
+        
+        function showLoading(show, text = 'Carregando...') {
+            const loadingElement = document.getElementById('loading');
+            const contentElement = document.getElementById('content');
+            
+            if (loadingElement && contentElement) {
+                loadingElement.style.display = show ? 'flex' : 'none';
+                contentElement.style.display = show ? 'none' : 'block';
+                if (show) {
+                    const spanElement = loadingElement.querySelector('span');
+                    if (spanElement) {
+                        spanElement.textContent = text;
+                    }
+                }
+            }
+        }
+        
+        function showError(message) {
+            alert('❌ ' + message);
+            showLoading(false);
+        }
+        
+        // Função para alternar entre abas
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabs;
+            
+            // Esconde todos os conteúdos das abas
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // Remove a classe active de todas as abas
+            tabs = document.getElementsByClassName("tab");
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            // Mostra o conteúdo da aba específica
+            const tabElement = document.getElementById(tabName);
+            if (tabElement) {
+                tabElement.classList.add("active");
+            }
+            
+            // Adiciona a classe active à aba que foi clicada
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add("active");
+            }
+        }
+        
+        console.log('WELAR - Página de Edição v1.1 (ATUALIZADA) carregada');
+    </script>
+</body>
+</html>
