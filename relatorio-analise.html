@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELAR - Relatório Final de Análise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="icon" type="image/png" href="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png">
+    
+    <style>
+        :root {
+            --primary: #1e2e39;
+            --primary-dark: #0f1820;
+            --primary-light: #2d3e4b;
+            --secondary: #4a90e2;
+            --secondary-light: #6bb1ff;
+            --accent: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.05), 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.05), 0 10px 10px rgba(0, 0, 0, 0.04);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        /* CONTAINER PRINCIPAL */
+        .report-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        /* CONTROLES DE AÇÃO */
+        .action-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: white;
+            width: 180px;
+        }
+        .btn-print {
+            background: linear-gradient(135deg, var(--accent), #22c55e);
+        }
+        .btn-back {
+            background: linear-gradient(135deg, var(--gray-600), var(--gray-500));
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        /* CABEÇALHO DO RELATÓRIO */
+        .report-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            height: 80px;
+            object-fit: contain;
+        }
+        .report-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .report-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        /* CORPO DO RELATÓRIO */
+        .report-body {
+            padding: 40px;
+        }
+        /* SEÇÕES DO RELATÓRIO */
+        .section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title i {
+            font-size: 28px;
+            color: var(--secondary);
+        }
+        /* CARDS */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            page-break-inside: avoid;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title i {
+            color: var(--secondary);
+        }
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        /* SEÇÕES DE TEXTO (NOVO ESTILO) */
+        .text-section {
+            margin-bottom: 30px;
+        }
+        .text-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .text-section-title i {
+            color: var(--secondary);
+        }
+        .text-section-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            padding-left: 28px;
+        }
+        /* GRID DE INFORMAÇÕES */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+        /* TABELA DE DANOS */
+        .damages-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .damages-table th {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .damages-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 15px;
+        }
+        .damages-table tr:nth-child(even) {
+            background: var(--gray-100);
+        }
+        .damages-table tr:last-child td {
+            border-bottom: none;
+        }
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .severity-low {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent);
+        }
+        .severity-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        .severity-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        /* CHECKBOX STYLE */
+        .checkbox-group {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            position: relative;
+            background: white;
+            flex-shrink: 0;
+        }
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .checkbox-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        /* STATUS BADGES */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-aprovado {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent);
+        }
+        .status-negado {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        .status-sindicancia {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        /* FLAGS DE ATENÇÃO */
+        .flag-item {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        /* PROTOCOLO INFO */
+        .protocol-info {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            page-break-inside: avoid;
+        }
+        /* AVISO BETA */
+        .beta-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px 0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+        .beta-warning strong {
+            color: var(--warning);
+            font-size: 18px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        /* RODAPÉ */
+        .report-footer {
+            background: var(--gray-100);
+            padding: 30px 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        /* LOADING STATE */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+            color: var(--text-muted);
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--gray-200);
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .action-controls {
+                display: none !important;
+            }
+            
+            .report-container {
+                box-shadow: none;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .section {
+                margin-bottom: 30px;
+                page-break-inside: avoid;
+            }
+            
+            .card {
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+            }
+            
+            .damages-table {
+                page-break-inside: auto;
+            }
+            
+            .damages-table tr {
+                page-break-inside: avoid;
+            }
+            
+            .beta-warning,
+            .protocol-info {
+                page-break-inside: avoid;
+            }
+            
+            /* Remover cabeçalhos e rodapés automáticos do PDF */
+            @page {
+                margin: 1cm;
+                size: A4;
+            }
+            
+            @page :first {
+                margin-top: 1cm;
+            }
+            
+            /* Garantir que as cores sejam impressas corretamente */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            /* Evitar quebras de página em elementos importantes */
+            .section {
+                break-inside: avoid;
+            }
+            
+            .card {
+                break-inside: avoid;
+            }
+        }
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .report-header {
+                padding: 24px;
+            }
+            
+            .report-body {
+                padding: 24px;
+            }
+            
+            .action-controls {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 20px;
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .action-btn {
+                width: auto;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+            
+            .logo-container {
+                justify-content: center;
+            }
+            
+            .report-title {
+                font-size: 28px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .damages-table {
+                font-size: 12px;
+            }
+            
+            .damages-table th,
+            .damages-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- CONTROLES DE AÇÃO -->
+    <div class="action-controls">
+        <button class="action-btn btn-print" onclick="window.print()">
+            <i class="ri-printer-line"></i> Imprimir
+        </button>
+        <a id="back-button" href="#" class="action-btn btn-back">
+            <i class="ri-arrow-left-line"></i> Voltar
+        </a>
+    </div>
+    <!-- LOADING STATE -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <h3>Gerando Relatório Final</h3>
+        <p>Coletando e organizando dados da análise...</p>
+    </div>
+    <!-- CONTAINER DO RELATÓRIO -->
+    <div id="report-content" class="report-container" style="display: none;">
+        <!-- CABEÇALHO -->
+        <div class="report-header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" alt="WELAR" class="logo">
+                </div>
+                
+                <h1 class="report-title" id="report-title">Relatório de Análise de Sinistro</h1>
+                <p class="report-subtitle">Código do Sinistro: <span id="event-code">-</span></p>
+            </div>
+        </div>
+        <!-- CORPO DO RELATÓRIO -->
+        <div class="report-body">
+            <!-- SEÇÃO 1: INFORMAÇÕES DA ANÁLISE -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="ri-information-line"></i>
+                    Informações da Análise
+                </div>
+                
+                <!-- Card de Dados do Veículo -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="ri-car-line"></i>
+                        Dados do Veículo
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-number-0"></i> Placa
+                            </div>
+                            <div class="info-value" id="vehicle-plate">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-car-line"></i> Marca/Modelo
+                            </div>
+                            <div class="info-value" id="vehicle-brand-model">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-calendar-line"></i> Ano Fabricação
+                            </div>
+                            <div class="info-value" id="vehicle-year-manufacture">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-calendar-line"></i> Ano Modelo
+                            </div>
+                            <div class="info-value" id="vehicle-year-model">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-palette-line"></i> Cor
+                            </div>
+                            <div class="info-value" id="vehicle-color">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-barcode-line"></i> Chassi
+                            </div>
+                            <div class="info-value" id="vehicle-chassis">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-file-list-line"></i> Renavam
+                            </div>
+                            <div class="info-value" id="vehicle-renavam">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-shield-check-line"></i> Status Licenciamento
+                            </div>
+                            <div class="info-value" id="vehicle-license-status">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card de Dados do Associado -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="ri-user-star-line"></i>
+                        Dados do Associado
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-user-line"></i> Nome Completo
+                            </div>
+                            <div class="info-value" id="associate-name">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-id-card-line"></i> CPF
+                            </div>
+                            <div class="info-value" id="associate-cpf">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-calendar-line"></i> Data Nascimento
+                            </div>
+                            <div class="info-value" id="associate-birth-date">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-shield-check-line"></i> Status Habilitação
+                            </div>
+                            <div class="info-value" id="associate-license-status">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-calendar-check-line"></i> Validade CNH
+                            </div>
+                            <div class="info-value" id="associate-cnh-validity">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="ri-briefcase-line"></i> Atividade Remunerada
+                            </div>
+                            <div class="info-value" id="associate-paid-activity">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SEÇÃO 2: DECISÃO DA ANÁLISE -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="ri-scales-line"></i>
+                    Decisão da Análise
+                </div>
+                
+                <!-- ANÁLISE DO BENEFÍCIO - PRIMEIRO ITEM -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="ri-shield-star-line"></i>
+                        Análise do Benefício
+                    </div>
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="ri-checkbox-circle-line"></i> Status do Benefício
+                                </div>
+                                <div class="info-value">
+                                    <span id="benefit-status-badge" class="status-badge">-</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="ri-calendar-line"></i> Data da Decisão
+                                </div>
+                                <div class="info-value" id="benefit-decision-date">-</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <div class="info-label">
+                                <i class="ri-file-text-line"></i> Motivo da Decisão
+                            </div>
+                            <div style="margin-top: 8px; color: var(--text-secondary);">
+                                <p id="benefit-decision-reason">-</p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <div class="info-label">
+                                <i class="ri-chat-3-line"></i> Observações
+                            </div>
+                            <div style="margin-top: 8px; color: var(--text-secondary);">
+                                <p id="benefit-observations">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Categoria da Decisão Técnica - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-checkbox-line"></i>
+                        Categoria da Decisão Técnica
+                    </h3>
+                    <div class="text-section-content">
+                        <div class="checkbox-group" id="decision-checkboxes">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Justificativa da Análise - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-file-text-line"></i>
+                        Justificativa da Análise
+                    </h3>
+                    <div class="text-section-content" id="decision-justification">
+                        Carregando justificativa...
+                    </div>
+                </div>
+                
+                <!-- Resumo da Análise Visual - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-eye-line"></i>
+                        Resumo da Análise Visual
+                    </h3>
+                    <div class="text-section-content" id="visual-analysis-summary">
+                        Carregando resumo da análise visual...
+                    </div>
+                </div>
+                
+                <!-- Justificativa da Qualidade - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-shield-check-line"></i>
+                        Justificativa da Qualidade
+                    </h3>
+                    <div class="text-section-content" id="quality-justification">
+                        Carregando justificativa da qualidade...
+                    </div>
+                </div>
+            </div>
+            <!-- SEÇÃO 3: ANÁLISE DE DANOS NO VEÍCULO -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="ri-tools-line"></i>
+                    Análise de Danos no Veículo
+                </div>
+                
+                <!-- Resumo da Análise Visual - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-image-line"></i>
+                        Resumo da Análise Visual
+                    </h3>
+                    <div class="text-section-content" id="visual-summary">
+                        Carregando resumo da análise visual...
+                    </div>
+                </div>
+                
+                <table class="damages-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Componente</th>
+                            <th style="width: 40%;">Descrição do Dano</th>
+                            <th style="width: 20%;">Ação Recomendada</th>
+                            <th style="width: 15%;">Severidade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="damages-list">
+                        <!-- Será preenchido via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- SEÇÃO 4: RESUMO EXECUTIVO -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="ri-file-list-3-line"></i>
+                    Resumo Executivo
+                </div>
+                
+                <!-- Síntese da Análise - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-clipboard-line"></i>
+                        Síntese da Análise
+                    </h3>
+                    <div class="text-section-content" id="executive-summary">
+                        Carregando resumo executivo...
+                    </div>
+                </div>
+                
+                <!-- Boletim de Ocorrência - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-file-text-line"></i>
+                        Boletim de Ocorrência
+                    </h3>
+                    <div class="text-section-content" id="bo-summary">
+                        Carregando resumo do boletim...
+                    </div>
+                </div>
+                
+                <!-- Dinâmica do Acidente - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-route-line"></i>
+                        Dinâmica do Acidente
+                    </h3>
+                    <div class="text-section-content" id="accident-dynamics">
+                        Carregando dinâmica do acidente...
+                    </div>
+                </div>
+                
+                <!-- Status da Documentação - Transformado em texto -->
+                <div class="text-section">
+                    <h3 class="text-section-title">
+                        <i class="ri-shield-check-line"></i>
+                        Status da Documentação
+                    </h3>
+                    <div class="text-section-content" id="documentation-status">
+                        Carregando status da documentação...
+                    </div>
+                </div>
+            </div>
+            <!-- AVISO BETA -->
+            <div class="beta-warning">
+                <strong>⚠️ AVISO IMPORTANTE</strong>
+                <p>Análise automatizada com IA treinada. Sistema possui 95%+ de acurácia validada. Recomendamos validação humana em casos com flags de atenção ou complexidade atípica.</p>
+            </div>
+            <!-- PROTOCOLO INFO -->
+            <div class="protocol-info">
+                <i class="ri-shield-check-line"></i>
+                Protocolo de Autenticidade: <span id="auth-protocol">-</span>
+            </div>
+        </div>
+        <!-- RODAPÉ -->
+        <div class="report-footer">
+            <div class="footer-logo">
+                <i class="ri-shield-check-line"></i> WELAR - Análise de Sinistro MVP 1.0
+            </div>
+            <p>Relatório gerado automaticamente em <span id="footer-date">-</span></p>
+            <p>Para mais informações, entre em contato com suporte@welar.com.br</p>
+        </div>
+    </div>
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // CONFIGURAÇÃO SUPABASE ATUALIZADA
+        const SUPABASE_URL = 'https://orpkucozcuvepcnewudm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycGt1Y296Y3V2ZXBjbmV3dWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NjQxMzYsImV4cCI6MjA3NjU0MDEzNn0.5Xlc_ZphXnzILbAyQCkPaJyDh39zH_jq12sFAFuVpww';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // VARIÁVEIS GLOBAIS
+        let currentAnalysis = null;
+        let currentEventCode = null;
+        let currentUser = null;
+        
+        // Função para verificar se o usuário está logado
+        async function verificarLogin() {
+            try {
+                // Verificar se há token no localStorage
+                const token = localStorage.getItem('welar_session');
+                const userData = localStorage.getItem('welar_user');
+                
+                if (!token || !userData) {
+                    console.log('Token ou usuário não encontrados no localStorage');
+                    redirectToLogin();
+                    return false;
+                }
+                
+                // Parse dos dados do usuário
+                currentUser = JSON.parse(userData);
+                
+                // Verificar se a sessão é válida no Supabase
+                const { data: sessao, error } = await supabase
+                    .from('sessoes_usuario')
+                    .select('*')
+                    .eq('token_sessao', token)
+                    .eq('ativa', true)
+                    .eq('usuario_id', currentUser.id)
+                    .gte('data_expiracao', new Date().toISOString())
+                    .single();
+                    
+                if (error || !sessao) {
+                    console.error('Sessão inválida ou expirada:', error);
+                    redirectToLogin();
+                    return false;
+                }
+                
+                // Verificar se o usuário tem permissão para acessar esta página
+                const { data: usuario, error: usuarioError } = await supabase
+                    .from('usuarios_sistema')
+                    .select('cargo')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (usuarioError || !usuario) {
+                    console.error('Erro ao verificar cargo do usuário:', usuarioError);
+                    redirectToLogin();
+                    return false;
+                }
+                
+                // Verificar se o cargo do usuário tem permissão para acessar esta página
+                const cargosPermitidos = ['ADMIN', 'ANALISTA', 'SUPERVISOR'];
+                if (!cargosPermitidos.includes(usuario.cargo)) {
+                    console.error('Usuário não tem permissão para acessar esta página:', usuario.cargo);
+                    alert('Você não tem permissão para acessar esta página.');
+                    redirectToLogin();
+                    return false;
+                }
+                
+                // Atualizar último acesso
+                await supabase
+                    .from('sessoes_usuario')
+                    .update({ data_ultimo_acesso: new Date().toISOString() })
+                    .eq('id', sessao.id);
+                    
+                console.log('Login verificado com sucesso para:', currentUser.email);
+                return true;
+                
+            } catch (error) {
+                console.error('Erro ao verificar login:', error);
+                redirectToLogin();
+                return false;
+            }
+        }
+        
+        // Função para redirecionar para a página de login
+        function redirectToLogin() {
+            // Limpar dados inválidos
+            localStorage.removeItem('welar_session');
+            localStorage.removeItem('welar_user');
+            
+            // Redirecionar para a página de login
+            window.location.href = 'https://wisify.welar.com.br/login';
+        }
+        
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeReport();
+        });
+        
+        async function initializeReport() {
+            try {
+                // Verificar login antes de continuar
+                const isLoggedIn = await verificarLogin();
+                if (!isLoggedIn) return;
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                currentEventCode = urlParams.get('codigo_evento') || urlParams.get('codigo') || urlParams.get('id');
+                
+                if (!currentEventCode) {
+                    showError('Código do evento não informado na URL');
+                    return;
+                }
+                
+                // Configurar o botão voltar
+                const backButton = document.getElementById('back-button');
+                backButton.href = `https://wisify.welar.com.br/analise?codigo=${currentEventCode}`;
+                
+                console.log('Gerando relatório para:', currentEventCode);
+                await loadReportData();
+                
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+                showError('Erro ao carregar o relatório');
+            }
+        }
+        
+        async function loadReportData() {
+            try {
+                showLoading(true);
+                
+                // Buscar dados consolidados
+                const { data: consolidacao, error: consolidacaoError } = await supabase
+                    .from('consolidacao_final')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode)
+                    .single();
+                
+                if (consolidacaoError) {
+                    console.error('Erro ao buscar consolidação:', consolidacaoError);
+                    showError('Relatório não encontrado');
+                    return;
+                }
+                
+                // Buscar arquivos/imagens (opcional para metadados)
+                const { data: arquivos, error: arquivosError } = await supabase
+                    .from('arquivos_originais')
+                    .select('*')
+                    .eq('codigo_evento', currentEventCode);
+                
+                if (arquivosError) {
+                    console.error('Erro ao buscar arquivos:', arquivosError);
+                }
+                
+                currentAnalysis = {
+                    consolidacao,
+                    arquivos: arquivos || []
+                };
+                
+                // Gerar relatório
+                generateReport();
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showError('Erro ao carregar dados do relatório');
+                showLoading(false);
+            }
+        }
+        
+        function generateReport() {
+            const data = currentAnalysis.consolidacao;
+            
+            // CABEÇALHO
+            document.getElementById('event-code').textContent = data.codigo_evento || 'Não informado';
+            
+            // INFORMAÇÕES DA ANÁLISE
+            // Card de Dados do Veículo
+            document.getElementById('vehicle-plate').textContent = data.veiculo_placa || 'Não informado';
+            document.getElementById('vehicle-brand-model').textContent = data.veiculo_marca_modelo || 'Não informado';
+            document.getElementById('vehicle-year-manufacture').textContent = data.veiculo_ano_fabricacao || 'Não informado';
+            document.getElementById('vehicle-year-model').textContent = data.veiculo_ano_modelo || 'Não informado';
+            document.getElementById('vehicle-color').textContent = data.veiculo_cor || 'Não informado';
+            document.getElementById('vehicle-chassis').textContent = data.veiculo_chassi || 'Não informado';
+            document.getElementById('vehicle-renavam').textContent = data.veiculo_renavam || 'Não informado';
+            document.getElementById('vehicle-license-status').textContent = data.veiculo_status_licenciamento || 'Não informado';
+            
+            // Card de Dados do Associado
+            document.getElementById('associate-name').textContent = data.associado_nome_completo || 'Não informado';
+            document.getElementById('associate-cpf').textContent = data.associado_cpf || 'Não informado';
+            document.getElementById('associate-birth-date').textContent = formatDate(data.associado_data_nascimento) || 'Não informado';
+            document.getElementById('associate-license-status').textContent = data.associado_status_habilitacao || 'Não informado';
+            document.getElementById('associate-cnh-validity').textContent = formatDate(data.associado_data_validade_cnh) || 'Não informado';
+            document.getElementById('associate-paid-activity').textContent = data.associado_atividade_remunerada ? 'Sim' : 'Não';
+            
+            // SEÇÃO 2: DECISÃO DA ANÁLISE
+            generateBenefitAnalysisSection(data); // NOVA FUNÇÃO - PRIMEIRO ITEM
+            generateDecisionSection(data);
+            
+            // SEÇÃO 3: ANÁLISE DE DANOS NO VEÍCULO
+            document.getElementById('visual-summary').innerHTML = generateVisualSummary(data);
+            generateDamagesTable(data);
+            
+            // SEÇÃO 4: RESUMO EXECUTIVO
+            document.getElementById('executive-summary').textContent = data.bo_resumo_executivo || 'Resumo não disponível na análise.';
+            document.getElementById('bo-summary').innerHTML = generateBoSummary(data);
+            document.getElementById('accident-dynamics').textContent = data.bo_dinamica_acidente || 'Dinâmica não informada no boletim.';
+            document.getElementById('documentation-status').innerHTML = generateDocumentationStatus(data);
+            
+            // RODAPÉ
+            document.getElementById('footer-date').textContent = formatDateTime(new Date());
+            document.getElementById('auth-protocol').textContent = generateProtocol();
+        }
+        
+        // NOVA FUNÇÃO: Gerar seção de Análise do Benefício
+        function generateBenefitAnalysisSection(data) {
+            // Status do Benefício
+            const statusBenefit = data.status_beneficio || 'NÃO_DEFINIDO';
+            const statusBadge = document.getElementById('benefit-status-badge');
+            
+            if (statusBenefit === 'APROVADO') {
+                statusBadge.textContent = 'APROVADO';
+                statusBadge.className = 'status-badge status-aprovado';
+            } else if (statusBenefit === 'NEGADO') {
+                statusBadge.textContent = 'NEGADO';
+                statusBadge.className = 'status-badge status-negado';
+            } else if (statusBenefit === 'SINDICANCIA') {
+                statusBadge.textContent = 'SINDICÂNCIA';
+                statusBadge.className = 'status-badge status-sindicancia';
+            } else {
+                statusBadge.textContent = 'NÃO DEFINIDO';
+                statusBadge.className = 'status-badge';
+            }
+            
+            // Data da Decisão do Benefício
+            document.getElementById('benefit-decision-date').textContent = 
+                formatDateTime(data.data_decisao_beneficio) || 'Não informado';
+            
+            // Motivo da Decisão
+            document.getElementById('benefit-decision-reason').textContent = 
+                data.motivo_beneficio || 'Motivo não informado na análise.';
+            
+            // Observações
+            document.getElementById('benefit-observations').textContent = 
+                data.observacoes_beneficio || 'Nenhuma observação adicional registrada.';
+        }
+        
+        function generateDecisionSection(data) {
+            const checkboxesContainer = document.getElementById('decision-checkboxes');
+            
+            // Tratamento especial para a decisão - aceitar o formato que vem do Supabase
+            let decision = data.decisao_categoria || 'NAO_DEFINIDO';
+            
+            // Mapeamento entre os formatos - EXPANDIDO PARA ACEITAR VÁRIOS FORMATOS
+            const decisionMap = {
+                'TENTATIVA_REPARO': 'TENTATIVA_REPARO',
+                'PERDA_TOTAL': 'PERDA_TOTAL',
+                'SINDICANCIA': 'SINDICANCIA',
+                'Tentativa de Reparo': 'TENTATIVA_REPARO',
+                'Perda Total': 'PERDA_TOTAL',
+                'Sindicância': 'SINDICANCIA',
+                'Tentativa de reparo': 'TENTATIVA_REPARO',  // minúsculo
+                'Perda total': 'PERDA_TOTAL',              // minúsculo
+                'sindicância': 'SINDICANCIA',              // minúsculo
+                'Tentativa_de_Reparo': 'TENTATIVA_REPARO',  // com underline
+                'Perda_Total': 'PERDA_TOTAL',              // com underline
+                'Sindicancia_Investigacao': 'SINDICANCIA'  // com underline
+            };
+            
+            // Aplicar mapeamento se existir
+            if (decisionMap[decision]) {
+                decision = decisionMap[decision];
+            }
+            
+            // Gerar checkboxes
+            checkboxesContainer.innerHTML = `
+                <div class="checkbox-item">
+                    <div class="checkbox ${decision === 'TENTATIVA_REPARO' ? 'checked' : ''}"></div>
+                    <div class="checkbox-label">Tentativa de Reparo</div>
+                </div>
+                <div class="checkbox-item">
+                    <div class="checkbox ${decision === 'PERDA_TOTAL' ? 'checked' : ''}"></div>
+                    <div class="checkbox-label">Perda Total</div>
+                </div>
+                <div class="checkbox-item">
+                    <div class="checkbox ${decision === 'SINDICANCIA' ? 'checked' : ''}"></div>
+                    <div class="checkbox-label">Sindicância/Negação</div>
+                </div>
+            `;
+            
+            // Justificativa
+            document.getElementById('decision-justification').textContent = data.decisao_justificativa || 'Justificativa não fornecida na análise.';
+            
+            // Resumo da análise visual
+            document.getElementById('visual-analysis-summary').textContent = data.danos_resumo_analise_visual || 'Resumo não disponível na análise.';
+            
+            // Justificativa da qualidade
+            document.getElementById('quality-justification').textContent = data.danos_justificativa_qualidade || 'Justificativa não disponível na análise.';
+        }
+        
+        function generateVisualSummary(data) {
+            const totalImages = data.stats_total_imagens || 0;
+            const photosQuality = data.stats_score_qualidade_fotos || 0;
+            
+            let summary = `<p><strong>Justificativa de Qualidade das Imagens:</strong> ${data.danos_justificativa_qualidade || 'Não informado'}</p>`;
+            summary += `<p><strong>Resumo da Análise Visual:</strong> ${data.danos_resumo_analise_visual || 'Não informado'}</p>`;
+            summary += `<p><strong>Total de Imagens Analisadas:</strong> ${totalImages}</p>`;
+            
+            if (photosQuality >= 80) {
+                summary += '<p>As imagens apresentam excelente qualidade para análise técnica.</p>';
+            } else if (photosQuality >= 60) {
+                summary += '<p>As imagens apresentam qualidade adequada para análise.</p>';
+            } else {
+                summary += '<p>As imagens apresentam limitações que podem afetar a precisão da análise.</p>';
+            }
+            
+            return summary;
+        }
+        
+        function generateBoSummary(data) {
+            const items = [];
+            
+            if (data.bo_numero) items.push(`<strong>Número do B.O.:</strong> ${data.bo_numero}`);
+            if (data.bo_local_ocorrencia) items.push(`<strong>Local:</strong> ${data.bo_local_ocorrencia}`);
+            if (data.bo_data_ocorrencia) items.push(`<strong>Data:</strong> ${formatDate(data.bo_data_ocorrencia)}`);
+            if (data.bo_causa_presumida) items.push(`<strong>Causa Presumida:</strong> ${data.bo_causa_presumida}`);
+            if (data.bo_veiculos_envolvidos) items.push(`<strong>Veículos Envolvidos:</strong> ${data.bo_veiculos_envolvidos}`);
+            if (data.bo_dinamica_acidente) items.push(`<strong>Dinâmica do Acidente:</strong> ${data.bo_dinamica_acidente}`);
+            if (data.bo_historico_ocorrencia) items.push(`<strong>Histórico da Ocorrência:</strong> ${data.bo_historico_ocorrencia}`);
+            if (data.bo_assistencia_utilizada) items.push(`<strong>Assistência 24 Horas:</strong> ${data.bo_assistencia_utilizada}`);
+            if (data.bo_observacoes_importantes) items.push(`<strong>Observações Importantes:</strong> ${data.bo_observacoes_importantes}`);
+            
+            return items.length > 0 ? items.join('<br>') : 'Informações do B.O. não disponíveis.';
+        }
+        
+        function generateDocumentationStatus(data) {
+            const status = [];
+            
+            // Status CNH
+            const cnhStatus = data.associado_status_habilitacao || 'Não verificado';
+            const cnhValidity = data.associado_data_validade_cnh ? formatDate(data.associado_data_validade_cnh) : 'Não informado';
+            status.push(`<strong>CNH:</strong> ${cnhStatus} (Validade: ${cnhValidity})`);
+            
+            // Status Licenciamento
+            const licenseStatus = data.veiculo_status_licenciamento || 'Não verificado';
+            const licenseExpiry = data.veiculo_data_vencimento_licenciamento ? formatDate(data.veiculo_data_vencimento_licenciamento) : 'Não informado';
+            status.push(`<strong>Licenciamento:</strong> ${licenseStatus} (Vencimento: ${licenseExpiry})`);
+            
+            // Alienação Fiduciária
+            const financing = data.veiculo_alienacao_fiduciaria ? 'Sim' : 'Não';
+            status.push(`<strong>Alienação Fiduciária:</strong> ${financing}`);
+            
+            return status.join('<br>');
+        }
+        
+        function generateDamagesTable(data) {
+            const tableBody = document.getElementById('damages-list');
+            tableBody.innerHTML = '';
+            
+            try {
+                let damageDataArray = [];
+                
+                if (data.componentes_danificados_json) {
+                    if (typeof data.componentes_danificados_json === 'string') {
+                        damageDataArray = JSON.parse(data.componentes_danificados_json);
+                    } else if (Array.isArray(data.componentes_danificados_json)) {
+                        damageDataArray = data.componentes_danificados_json;
+                    }
+                }
+                
+                if (damageDataArray.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); font-style: italic;">
+                            Nenhum dano identificado na análise
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                    return;
+                }
+                
+                damageDataArray.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    const severityClass = getSeverityClass(item.severidade || 1);
+                    const severityText = getSeverityText(item.severidade || 1);
+                    
+                    row.innerHTML = `
+                        <td><strong>${item.componente || 'Componente não especificado'}</strong></td>
+                        <td>${item.tipo_dano || 'Descrição não disponível'}</td>
+                        <td>${item.acao_recomendada || 'Ação não especificada'}</td>
+                        <td>
+                            <span class="severity-badge ${severityClass}">
+                                ${severityText}
+                            </span>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+            } catch (e) {
+                console.error('Erro ao processar danos:', e);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="4" style="text-align: center; color: var(--danger); font-style: italic;">
+                        Erro ao carregar dados de danos
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+        
+        function getSeverityClass(severity) {
+            if (severity >= 7) return 'severity-high';
+            if (severity >= 4) return 'severity-medium';
+            return 'severity-low';
+        }
+        
+        function getSeverityText(severity) {
+            return `${severity}/10`;
+        }
+        
+        function generateProtocol() {
+            // Gerar protocolo único baseado no evento e timestamp
+            const timestamp = Date.now().toString(36);
+            const eventCode = (currentEventCode || 'UNK').substring(0, 3).toUpperCase();
+            return `WLR-${eventCode}-${timestamp}`.toUpperCase();
+        }
+        
+        // UTILITY FUNCTIONS
+        function formatDate(dateString) {
+            if (!dateString) return null;
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return null;
+            const date = new Date(dateString);
+            return date.toLocaleString('pt-BR');
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+            document.getElementById('report-content').style.display = show ? 'none' : 'block';
+        }
+        
+        function showError(message) {
+            alert('❌ ' + message);
+            showLoading(false);
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'success' ? 'var(--accent)' : 'var(--danger)'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 0.5rem;
+                z-index: 10000;
+                opacity: 0;
+                transition: opacity 0.3s;
+                box-shadow: var(--shadow-lg);
+                font-weight: 600;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '1';
+            }, 100);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+        
+        // KEYBOARD SHORTCUTS
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+P para imprimir
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+        
+        console.log('WELAR - Página de Relatório Final com Análise de Benefício carregada');
+    </script>
+</body>
+</html>
