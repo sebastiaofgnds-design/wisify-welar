@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WELAR - Análise de Sinistro - Terceiros</title>
+    <link rel="icon" href="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" type="image/png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Manter os estilos existentes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        :root {
+            --welar-darkest: #14182c;
+            --welar-dark: #161f2f;
+            --welar-medium: #1e293b;
+            --welar-button: #468ce8;
+            --welar-light: #f8fafc;
+            --welar-border: #e2e8f0;
+            --welar-success: #22c55e;
+            --welar-warning: #f59e0b;
+            --welar-error: #ef4444;
+            --welar-text: #334155;
+            --welar-terceiro: #8b5cf6; /* Nova cor para distinguir análise de terceiros */
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(20, 24, 44, 0.15);
+            overflow: hidden;
+            border: 1px solid var(--welar-border);
+        }
+        .header {
+            background: linear-gradient(135deg, var(--welar-darkest) 0%, var(--welar-dark) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        .form-container {
+            padding: 40px;
+        }
+        .form-section {
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.6s ease forwards;
+        }
+        .form-section:nth-child(2) { animation-delay: 0.1s; }
+        .form-section:nth-child(3) { animation-delay: 0.2s; }
+        .form-section:nth-child(4) { animation-delay: 0.3s; }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--welar-darkest);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--welar-terceiro); /* Alterado para cor de terceiros */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            position: relative;
+        }
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--welar-border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--welar-light);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            background: white;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); /* Alterado para cor de terceiros */
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+        .form-label {
+            position: absolute;
+            top: -8px;
+            left: 15px;
+            background: white;
+            color: var(--welar-text);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 0 8px;
+        }
+        .upload-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .upload-box {
+            border: 3px dashed var(--welar-border);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--welar-light);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .upload-box:hover {
+            border-color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            background: rgba(139, 92, 246, 0.05); /* Alterado para cor de terceiros */
+            transform: translateY(-2px);
+        }
+        .upload-box.active {
+            border-color: var(--welar-success);
+            background: rgba(34, 197, 94, 0.05);
+        }
+        .upload-icon {
+            font-size: 2rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        .upload-box.active .upload-icon {
+            color: var(--welar-success);
+        }
+        .file-input {
+            display: none;
+        }
+        .upload-label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--welar-terceiro), #7c3aed); /* Alterado para cor de terceiros */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3); /* Alterado para cor de terceiros */
+        }
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .submit-btn.blocked {
+            background: var(--welar-warning);
+            cursor: not-allowed;
+            position: relative;
+        }
+        .submit-btn.blocked::after {
+            content: 'Preencha todos os campos obrigatórios';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--welar-darkest);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .submit-btn.blocked:hover::after {
+            opacity: 1;
+        }
+        .success-message {
+            display: none;
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--welar-success);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .error-message {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--welar-error);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .loading-spinner {
+            display: none;
+            margin: 0 auto;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--welar-terceiro); /* Alterado para cor de terceiros */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .file-preview {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--welar-border);
+        }
+        .file-preview.show {
+            display: block;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 5px 0;
+            padding: 8px;
+            background: var(--welar-light);
+            border-radius: 6px;
+        }
+        .webhook-status {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--welar-light);
+            border-radius: 12px;
+        }
+        .webhook-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--welar-border);
+        }
+        .webhook-item:last-child {
+            border-bottom: none;
+        }
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-waiting {
+            background: var(--welar-warning);
+            color: white;
+        }
+        .status-processing {
+            background: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        .status-success {
+            background: var(--welar-success);
+            color: white;
+        }
+        .status-error {
+            background: var(--welar-error);
+            color: white;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .final-actions {
+            display: none;
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        .btn-primary {
+            background: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            color: white;
+        }
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: var(--welar-light);
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--welar-border);
+            transition: all 0.3s ease;
+        }
+        .checkbox-item:hover {
+            background: rgba(139, 92, 246, 0.05); /* Alterado para cor de terceiros */
+            border-color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+        }
+        .checkbox-item label {
+            font-weight: 500;
+            color: var(--welar-text);
+            cursor: pointer;
+        }
+        .consent-section {
+            background: var(--welar-light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid var(--welar-terceiro); /* Alterado para cor de terceiros */
+        }
+        .consent-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--welar-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .consent-title i {
+            margin-right: 10px;
+            color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+        }
+        .consent-text {
+            color: var(--welar-text);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .consent-link {
+            color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .consent-link:hover {
+            text-decoration: underline;
+        }
+        .consent-checkbox {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .consent-checkbox input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--welar-terceiro); /* Alterado para cor de terceiros */
+        }
+        .consent-checkbox label {
+            font-weight: 600;
+            color: var(--welar-text);
+        }
+        .rls-warning {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 10px;
+            border-left: 5px solid var(--welar-warning);
+            color: #856404;
+        }
+        .rls-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .rls-title i {
+            margin-right: 10px;
+        }
+        .remove-file {
+            background: var(--welar-error);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .remove-file:hover {
+            background: #d32f2f;
+        }
+        .auth-debug {
+            display: none;
+            margin: 20px;
+            padding: 20px;
+            background: rgba(139, 92, 246, 0.1); /* Alterado para cor de terceiros */
+            border-radius: 10px;
+            border-left: 5px solid var(--welar-terceiro); /* Alterado para cor de terceiros */
+        }
+        .auth-debug h3 {
+            color: var(--welar-darkest);
+            margin-bottom: 15px;
+        }
+        .auth-debug pre {
+            background: var(--welar-darkest);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        .auth-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--welar-darkest);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .auth-status.authenticated {
+            background: var(--welar-success);
+        }
+        .auth-status.error {
+            background: var(--welar-error);
+        }
+        .validation-status {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: var(--welar-darkest);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        .validation-status.valid {
+            background: var(--welar-success);
+        }
+        .validation-status.invalid {
+            background: var(--welar-error);
+        }
+        .termo-feedback {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        .termo-count {
+            color: var(--welar-text);
+        }
+        .termo-validation {
+            color: var(--welar-warning);
+            font-weight: 500;
+        }
+        .termo-validation.valid {
+            color: var(--welar-success);
+        }
+        .upload-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            display: none;
+        }
+        .upload-status.success {
+            background: var(--welar-success);
+            display: block;
+        }
+        .upload-status.error {
+            background: var(--welar-error);
+            display: block;
+        }
+        .upload-status.uploading {
+            background: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            display: block;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--welar-terceiro); /* Alterado para cor de terceiros */
+            transition: width 0.3s ease;
+        }
+        .filename-info {
+            font-size: 0.75rem;
+            color: var(--welar-text);
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Novos estilos para navegação entre páginas */
+        .nav-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--welar-border);
+        }
+        .nav-tab {
+            padding: 12px 20px;
+            font-weight: 600;
+            color: var(--welar-text);
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-tab.active {
+            color: var(--welar-terceiro);
+            border-bottom-color: var(--welar-terceiro);
+        }
+        .nav-tab:hover:not(.active) {
+            color: var(--welar-dark);
+            background-color: rgba(139, 92, 246, 0.05);
+        }
+        .nav-tab i {
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+            .final-actions {
+                flex-direction: column;
+            }
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            .auth-status, .validation-status {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+                max-width: 100%;
+            }
+            .nav-tabs {
+                flex-direction: column;
+            }
+            .nav-tab {
+                border-bottom: 1px solid var(--welar-border);
+                border-left: 3px solid transparent;
+            }
+            .nav-tab.active {
+                border-bottom: 1px solid var(--welar-border);
+                border-left-color: var(--welar-terceiro);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador de Status de Autenticação -->
+    <div class="auth-status" id="authStatus">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span>Verificando autenticação...</span>
+    </div>
+    
+    <!-- Indicador de Status de Validação -->
+    <div class="validation-status" id="validationStatus" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Verificando campos obrigatórios...</span>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="https://f005.backblazeb2.com/file/levelave/Logos+Welar+_Instagram.png" alt="WELAR Logo">
+            </div>
+            <h1>Análise de Sinistro - Terceiros</h1>
+            <p>Sistema Integrado de Análise Automatizada com IA</p>
+        </div>
+        
+        <!-- Abas de navegação -->
+        <div class="nav-tabs">
+            <div class="nav-tab" onclick="irParaAnaliseAssociado()">
+                <i class="fas fa-user"></i>
+                Análise do Associado
+            </div>
+            <div class="nav-tab active">
+                <i class="fas fa-users"></i>
+                Análise de Terceiros
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <form id="analiseForm">
+                <!-- Seção 1: Dados do Analista -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-tie"></i>
+                        Dados do Analista
+                    </h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Nome do Analista</label>
+                            <input type="text" id="analista_nome" name="analista_nome" class="form-input" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">E-mail do Analista</label>
+                            <input type="email" id="analista_email" name="analista_email" class="form-input" disabled>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção 2: Dados do Evento Principal -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-link"></i>
+                        Vinculação ao Evento Principal
+                    </h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Código do Evento Principal *</label>
+                            <input type="text" id="codigo_evento_principal" name="codigo_evento_principal" class="form-input" 
+                                   placeholder="Ex: WLHHMMSSDDMMYY" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção 3: Termo de Acionamento -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-alt"></i>
+                        Termo de Acionamento
+                    </h2>
+                    <div class="form-group">
+                        <label class="form-label">Relato do Terceiro *</label>
+                        <textarea id="termo_acionamento" name="termo_acionamento" class="form-input form-textarea" 
+                                  placeholder="Descreva detalhadamente o sinistro conforme relatado pelo terceiro..." required></textarea>
+                        <div class="termo-feedback">
+                            <div class="termo-count"><span id="termoCount">0</span>/50 caracteres mínimos</div>
+                            <div class="termo-validation" id="termoValidation">Mínimo de 50 caracteres</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção 4: Upload de Documentos -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-upload"></i>
+                        Documentos Obrigatórios
+                    </h2>
+                    <div class="upload-section">
+                        <!-- CNH do Terceiro -->
+                        <div class="upload-box" id="cnh_upload_box">
+                            <div class="upload-status" id="cnh_status"></div>
+                            <i class="fas fa-id-card upload-icon"></i>
+                            <h3>CNH do Terceiro</h3>
+                            <p>Carteira Nacional de Habilitação</p>
+                            <small>PDF ou Imagem</small>
+                            <input type="file" id="cnh_file" name="cnh_file" class="file-input" accept=".pdf,.jpg,.jpeg,.png">
+                            <label for="cnh_file" class="upload-label"></label>
+                            <div class="file-preview" id="cnh_preview"></div>
+                        </div>
+                        <!-- CRLV do Terceiro -->
+                        <div class="upload-box" id="crlv_upload_box">
+                            <div class="upload-status" id="crlv_status"></div>
+                            <i class="fas fa-car upload-icon"></i>
+                            <h3>CRLV do Terceiro</h3>
+                            <p>Certificado de Registro</p>
+                            <small>PDF ou Imagem</small>
+                            <input type="file" id="crlv_file" name="crlv_file" class="file-input" accept=".pdf,.jpg,.jpeg,.png">
+                            <label for="crlv_file" class="upload-label"></label>
+                            <div class="file-preview" id="crlv_preview"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seção 5: Fotos do Veículo do Terceiro -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-camera"></i>
+                        Fotos do Veículo do Terceiro
+                    </h2>
+                    <div class="upload-box" id="fotos_upload_box">
+                        <div class="upload-status" id="fotos_status"></div>
+                        <i class="fas fa-images upload-icon"></i>
+                        <h3>Fotos dos Danos</h3>
+                        <p>Selecione múltiplas imagens dos danos do veículo do terceiro</p>
+                        <small>JPG, PNG - Máximo 10 fotos</small>
+                        <div class="filename-info">Nomes de arquivo serão sanitizados automaticamente</div>
+                        <input type="file" id="fotos_veiculo" name="fotos_veiculo" class="file-input" 
+                               accept=".jpg,.jpeg,.png" multiple>
+                        <label for="fotos_veiculo" class="upload-label"></label>
+                        <div class="file-preview" id="fotos_preview"></div>
+                    </div>
+                </div>
+                
+                <!-- Seção 6: Termo de Consentimento -->
+                <div class="form-section">
+                    <div class="consent-section">
+                        <h3 class="consent-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Termo de Consentimento do Analista
+                        </h3>
+                        <p class="consent-text">
+                            Ao realizar esta análise, você confirma que revisará cuidadosamente todos os documentos e informações fornecidas, 
+                            garantindo a conformidade com as políticas da empresa e a legislação vigente. Os dados processados serão 
+                            tratados de acordo com nossa <a href="https://wisify.welar.com.br/politicas" target="_blank" class="consent-link">Política de Privacidade</a>.
+                        </p>
+                        <div class="consent-checkbox">
+                            <input type="checkbox" id="consentimento_analista" name="consentimento_analista" required>
+                            <label for="consentimento_analista">Declaro que li e concordo com os termos de consentimento para análise deste sinistro</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aviso de RLS -->
+                <div class="rls-warning" id="rlsWarning">
+                    <div class="rls-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Aviso de Permissão
+                    </div>
+                    <p>
+                        Detectamos um problema de permissão ao tentar salvar os dados. Isso pode estar relacionado às políticas de segurança do sistema (RLS).
+                    </p>
+                    <div style="margin-top: 10px; font-family: monospace; font-size: 0.85rem;">
+                        <strong>Verificar:</strong><br>
+                        1. Política RLS para a tabela: eventos_analise<br>
+                        2. Política RLS para a tabela: consolidacao_terceiros<br>
+                        3. Política RLS para a tabela: dados_iniciais_formulario<br>
+                        4. Política RLS para a tabela: arquivos_originais<br>
+                        5. Permissões do bucket: arquivos-sinistros
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button type="button" onclick="criarBucketPublico()" class="btn-primary">
+                            <i class="fas fa-database"></i> Criar Bucket Público
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Botão de Envio -->
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <i class="fas fa-rocket"></i>
+                    Iniciar Análise de Terceiro
+                </button>
+                
+                <!-- Loading -->
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                
+                <!-- Progresso dos Webhooks -->
+                <div class="webhook-status" id="webhookStatus">
+                    <h3 style="color: var(--welar-darkest); margin-bottom: 20px;">
+                        <i class="fas fa-cogs"></i> Status do Processamento:
+                    </h3>
+                    
+                    <!-- Barra de Progresso Geral -->
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-weight: 600; color: var(--welar-darkest);">Progresso Geral</span>
+                            <span id="progressPercentage" style="font-weight: 600; color: var(--welar-terceiro);">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="overallProgress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="webhook-item">
+                        <div class="status-icon status-waiting" id="status-documentos">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <span style="color: var(--welar-darkest);">Análise de Documentos (CNH, CRLV)</span>
+                        <div style="margin-left: auto; font-size: 12px; color: var(--welar-text);">
+                            <span id="documentos-time">Aguardando...</span>
+                        </div>
+                    </div>
+                    <div class="webhook-item">
+                        <div class="status-icon status-waiting" id="status-fotos">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <span style="color: var(--welar-darkest);">Análise de Imagens do Veículo</span>
+                        <div style="margin-left: auto; font-size: 12px; color: var(--welar-text);">
+                            <span id="fotos-time">Aguardando...</span>
+                        </div>
+                    </div>
+                    <div class="webhook-item">
+                        <div class="status-icon status-waiting" id="status-consolidacao">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <span style="color: var(--welar-darkest);">Consolidação Final</span>
+                        <div style="margin-left: auto; font-size: 12px; color: var(--welar-text);">
+                            <span id="consolidacao-time">Aguardando...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Painel de Debug -->
+                <div class="auth-debug" id="authDebug">
+                    <h3><i class="fas fa-bug"></i> Informações de Autenticação</h3>
+                    <pre id="authInfo"></pre>
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="action-btn btn-primary" onclick="simularLogin()" style="flex: 1;">
+                            <i class="fas fa-user-check"></i> Simular Login (admin@welar.com.br)
+                        </button>
+                        <button type="button" class="action-btn btn-secondary" onclick="limparSessao()" style="flex: 1;">
+                            <i class="fas fa-trash"></i> Limpar Sessão
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Mensagens -->
+                <div class="success-message" id="successMessage"></div>
+                <div class="error-message" id="errorMessage"></div>
+                
+                <!-- Ações Finais -->
+                <div class="final-actions" id="finalActions">
+                    <button type="button" class="action-btn btn-primary" onclick="novaAnalise()">
+                        <i class="fas fa-plus"></i>
+                        Nova Análise
+                    </button>
+                    <button type="button" class="action-btn btn-secondary" onclick="irParaHome()">
+                        <i class="fas fa-home"></i>
+                        Ir para Home
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Classe base para comunicação com Supabase via REST API
+        class SupabaseRestClient {
+            constructor(url, anonKey) {
+                this.url = url;
+                this.anonKey = anonKey;
+                this.headers = {
+                    'apikey': anonKey,
+                    'Authorization': `Bearer ${anonKey}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                };
+            }
+            async request(endpoint, options = {}) {
+                try {
+                    const response = await fetch(`${this.url}${endpoint}`, {
+                        ...options,
+                        headers: {
+                            ...this.headers,
+                            ...options.headers
+                        }
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    }
+                    return response;
+                } catch (error) {
+                    console.error(`API Error [${endpoint}]:`, error);
+                    throw error;
+                }
+            }
+            // Operações com Storage
+            async listBuckets() {
+                const response = await this.request('/storage/v1/bucket');
+                return await response.json();
+            }
+            async listFiles(bucketName, options = {}) {
+                const response = await this.request(`/storage/v1/object/list/${bucketName}`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        limit: options.limit || 100,
+                        offset: options.offset || 0,
+                        sortBy: options.sortBy || { column: 'name', order: 'asc' }
+                    })
+                });
+                return await response.json();
+            }
+            async uploadFile(bucketName, fileName, file, options = {}) {
+                const response = await this.request(`/storage/v1/object/${bucketName}/${fileName}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': file.type || 'application/octet-stream',
+                        ...options.headers
+                    },
+                    body: file
+                });
+                return await response.json();
+            }
+            async getPublicUrl(bucketName, fileName) {
+                return `${this.url}/storage/v1/object/public/${bucketName}/${fileName}`;
+            }
+            // Operações com banco de dados
+            async insert(table, data) {
+                const response = await this.request(`/rest/v1/${table}`, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            }
+            async select(table, query = '') {
+                const response = await this.request(`/rest/v1/${table}?${query}`);
+                return await response.json();
+            }
+            async update(table, data, query) {
+                const response = await this.request(`/rest/v1/${table}?${query}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            }
+            async rpc(functionName, params) {
+                const response = await this.request(`/rest/v1/rpc/${functionName}`, {
+                    method: 'POST',
+                    body: JSON.stringify(params)
+                });
+                return await response.json();
+            }
+        }
+        // Classe de produção com retry e validações
+        class ProductionSupabaseClient extends SupabaseRestClient {
+            constructor(url, anonKey, config = {}) {
+                super(url, anonKey);
+                this.config = {
+                    REQUEST_TIMEOUT: config.REQUEST_TIMEOUT || 30000,
+                    MAX_RETRIES: config.MAX_RETRIES || 3,
+                    RETRY_DELAY: config.RETRY_DELAY || 1000,
+                    MAX_FILE_SIZE: config.MAX_FILE_SIZE || 10 * 1024 * 1024, // 10MB
+                    ALLOWED_MIME_TYPES: config.ALLOWED_MIME_TYPES || ['image/*', 'application/pdf'],
+                    ...config
+                };
+            }
+            async requestWithRetry(endpoint, options = {}, retries = 0) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), this.config.REQUEST_TIMEOUT);
+                    
+                    const response = await this.request(endpoint, {
+                        ...options,
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    return response;
+                } catch (error) {
+                    if (retries < this.config.MAX_RETRIES && this.isRetryableError(error)) {
+                        await this.sleep(this.config.RETRY_DELAY * Math.pow(2, retries));
+                        return this.requestWithRetry(endpoint, options, retries + 1);
+                    }
+                    throw error;
+                }
+            }
+            isRetryableError(error) {
+                const retryableStatusCodes = [408, 429, 500, 502, 503, 504];
+                return retryableStatusCodes.some(code => 
+                    error.message.includes(`HTTP ${code}`)
+                );
+            }
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            async uploadFileWithValidation(bucketName, fileName, file) {
+                // Validar tamanho
+                if (file.size > this.config.MAX_FILE_SIZE) {
+                    throw new Error(`Arquivo muito grande. Máximo: ${this.config.MAX_FILE_SIZE / (1024 * 1024)}MB`);
+                }
+                // Validar tipo MIME
+                const isAllowed = this.config.ALLOWED_MIME_TYPES.some(type => {
+                    if (type.endsWith('*')) {
+                        return file.type.startsWith(type.slice(0, -1));
+                    }
+                    return file.type === type;
+                });
+                if (!isAllowed) {
+                    throw new Error(`Tipo de arquivo não permitido: ${file.type}`);
+                }
+                // Upload com retry
+                return this.requestWithRetry(`/storage/v1/object/${bucketName}/${fileName}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': file.type
+                    },
+                    body: file
+                });
+            }
+        }
+        // Sistema de diagnóstico
+        class SupabaseHealthChecker {
+            constructor(client) {
+                this.client = client;
+            }
+            async runFullDiagnostic() {
+                const results = {
+                    timestamp: new Date().toISOString(),
+                    tests: {}
+                };
+                // Teste 1: Conectividade básica
+                try {
+                    await this.client.request('/rest/v1/');
+                    results.tests.connectivity = { status: 'pass', message: 'API acessível' };
+                } catch (error) {
+                    results.tests.connectivity = { status: 'fail', error: error.message };
+                }
+                // Teste 2: Storage API
+                try {
+                    const response = await this.client.request('/storage/v1/bucket');
+                    const buckets = await response.json();
+                    results.tests.storage = { 
+                        status: 'pass', 
+                        buckets: buckets.length,
+                        names: buckets.map(b => b.name)
+                    };
+                } catch (error) {
+                    results.tests.storage = { status: 'fail', error: error.message };
+                }
+                return results;
+            }
+        }
+        // Configuração e inicialização
+        const SUPABASE_URL = 'https://orpkucozcuvepcnewudm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycGt1Y296Y3V2ZXBjbmV3dWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NjQxMzYsImV4cCI6MjA3NjU0MDEzNn0.5Xlc_ZphXnzILbAyQCkPaJyDh39zH_jq12sFAFuVpww';
+        const BUCKET_NAME = 'arquivos-sinistros';
+        const config = {
+            REQUEST_TIMEOUT: 30000,
+            MAX_RETRIES: 3,
+            RETRY_DELAY: 1000,
+            MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+            ALLOWED_MIME_TYPES: ['image/jpeg', 'image/png', 'application/pdf']
+        };
+        const supabaseClient = new ProductionSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY, config);
+        const healthChecker = new SupabaseHealthChecker(supabaseClient);
+        
+        // URLs do N8N
+        const N8N_URLS = {
+            home: 'https://wisify.welar.com.br',
+            exibeAnalise: 'https://wisify.welar.com.br/analise-terceiro',
+            exibeAnaliseTerceiro: 'https://wisify.welar.com.br/analise-terceiro',
+            imprimeAnalise: 'https://wisify.welar.com.br/analise-terceiro',
+            formularioAnalise: 'https://wisify.welar.com.br/nova-analise',
+            formularioAnaliseTerceiro: 'https://wisify.welar.com.br/nova-analise-terceiro',
+            editaAnalise: 'https://wisify.welar.com.br/analise-terceiro',
+            login: 'https://wisify.welar.com.br/login',
+            analiseAssociado: 'https://wisify.welar.com.br/nova-analise', // Página de análise do associado
+            analiseTerceiro: 'https://wisify.welar.com.br/nova-analise-terceiro' // Página atual (análise de terceiros)
+        };
+        
+        // Webhooks de automação para análise de terceiros
+        const WEBHOOKS = {
+            analise_cnh: 'https://n8n.welar.com.br/webhook/analise_cnh-wisify',
+            analise_crlv: 'https://n8n.welar.com.br/webhook/analise_crlv-wisify',
+            ia_final: 'https://n8n.welar.com.br/webhook/ia-terceiros-wisify'
+        };
+        
+        // Webhooks de análise de imagens para terceiros
+        for (let i = 1; i <= 10; i++) {
+            WEBHOOKS[`analise_img${i}`] = `https://n8n.welar.com.br/webhook/wisify/analise_img${i}`;
+        }
+        
+        // Variáveis globais
+        let codigoEvento = '';
+        let codigoEventoPrincipal = '';
+        let arquivosCarregados = {
+            cnh: null,
+            crlv: null,
+            fotos: []
+        };
+        let statusAnalise = {
+            documentos: false,
+            fotos: false,
+            consolidacao: false
+        };
+        let intervalosMonitoramento = [];
+        let finalAiTriggered = false;
+        let debugMode = false; // Modo debug desativado por padrão
+        let devMode = false; // Modo desenvolvedor
+        let authCheckTimeout = null;
+        let formValidationTimeout = null;
+        
+        // Função de log para debug
+        function debugLog(message) {
+            if (debugMode) {
+                console.log(`[DEBUG] ${message}`);
+            }
+        }
+        
+        // Função para atualizar status de autenticação
+        function updateAuthStatus(status, message) {
+            const authStatus = document.getElementById('authStatus');
+            authStatus.className = 'auth-status ' + status;
+            
+            const icon = authStatus.querySelector('i');
+            const text = authStatus.querySelector('span');
+            
+            switch(status) {
+                case 'authenticated':
+                    icon.className = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    break;
+                default:
+                    icon.className = 'fas fa-circle-notch fa-spin';
+            }
+            
+            text.textContent = message;
+        }
+        
+        // Função para atualizar status de validação
+        function updateValidationStatus(status, message) {
+            const validationStatus = document.getElementById('validationStatus');
+            validationStatus.style.display = 'flex';
+            validationStatus.className = 'validation-status ' + status;
+            
+            const icon = validationStatus.querySelector('i');
+            const text = validationStatus.querySelector('span');
+            
+            switch(status) {
+                case 'valid':
+                    icon.className = 'fas fa-check-circle';
+                    break;
+                case 'invalid':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    break;
+                default:
+                    icon.className = 'fas fa-info-circle';
+            }
+            
+            text.textContent = message;
+            
+            // Esconder após 3 segundos
+            clearTimeout(formValidationTimeout);
+            formValidationTimeout = setTimeout(() => {
+                validationStatus.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Função para mostrar informações de autenticação
+        function mostrarInfoAutenticacao() {
+            const token = localStorage.getItem('welar_session');
+            const usuario = JSON.parse(localStorage.getItem('welar_user') || '{}');
+            
+            const authInfo = document.getElementById('authInfo');
+            authInfo.textContent = JSON.stringify({
+                token: token ? 'Presente' : 'Ausente',
+                tokenLength: token ? token.length : 0,
+                usuario: usuario,
+                localStorageKeys: Object.keys(localStorage),
+                urlParams: new URLSearchParams(window.location.search).toString(),
+                devMode: devMode,
+                debugMode: debugMode
+            }, null, 2);
+        }
+        
+        // Função para simular login (modo desenvolvimento)
+        function simularLogin() {
+            debugLog('Simulando login em modo desenvolvimento');
+            
+            // Criar usuário de teste
+            const usuarioTeste = {
+                id: 1,
+                nome: 'Administrador WELAR',
+                email: 'admin@welar.com.br',
+                cargo: 'ADMIN'
+            };
+            
+            // Criar token de teste
+            const tokenTeste = 'dev_token_' + Math.random().toString(36).substr(2, 20);
+            
+            // Salvar no localStorage com as chaves corretas
+            localStorage.setItem('welar_session', tokenTeste);
+            localStorage.setItem('welar_user', JSON.stringify(usuarioTeste));
+            
+            // Atualizar interface
+            document.getElementById('analista_nome').value = usuarioTeste.nome;
+            document.getElementById('analista_email').value = usuarioTeste.email;
+            
+            // Atualizar status de autenticação
+            updateAuthStatus('authenticated', `Autenticado como ${usuarioTeste.email}`);
+            
+            // Atualizar informações de debug
+            mostrarInfoAutenticacao();
+            
+            // Exibir mensagem de sucesso
+            showSuccess('Login simulado com sucesso! Você agora pode usar o sistema.');
+            
+            debugLog(`Login simulado para o usuário: ${usuarioTeste.nome}`);
+            
+            // Verificar validação do formulário
+            verificarEstadoFormulario();
+        }
+        
+        // Função para limpar sessão
+        function limparSessao() {
+            debugLog('Limpando sessão do localStorage');
+            
+            localStorage.removeItem('welar_session');
+            localStorage.removeItem('welar_user');
+            
+            // Limpar campos
+            document.getElementById('analista_nome').value = '';
+            document.getElementById('analista_email').value = '';
+            
+            // Atualizar status
+            updateAuthStatus('error', 'Sessão limpa');
+            
+            // Atualizar informações
+            mostrarInfoAutenticacao();
+            
+            // Verificar validação do formulário
+            verificarEstadoFormulario();
+            
+            showSuccess('Sessão limpa com sucesso!');
+        }
+        
+        // Função para criar bucket público
+        async function criarBucketPublico() {
+            try {
+                debugLog('Criando bucket público arquivos-sinistros');
+                
+                // Verificar se o bucket já existe
+                const buckets = await supabaseClient.listBuckets();
+                
+                const bucketExists = buckets.some(bucket => bucket.name === 'arquivos-sinistros');
+                
+                if (!bucketExists) {
+                    // Criar o bucket via API REST
+                    const response = await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: 'arquivos-sinistros',
+                            public: true,
+                            file_size_limit: 52428800, // 50MB
+                            allowed_mime_types: ['image/jpeg', 'image/png', 'application/pdf']
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    }
+                    
+                    debugLog('Bucket criado com sucesso');
+                } else {
+                    debugLog('Bucket já existe');
+                }
+                
+                showSuccess('Bucket público configurado com sucesso!');
+                document.getElementById('rlsWarning').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Erro ao criar bucket público:', error);
+                debugLog(`Erro ao criar bucket público: ${error.message}`);
+                showError('Erro ao configurar bucket: ' + error.message);
+            }
+        }
+        
+        // Função para sanitizar nome de arquivo
+        function sanitizeFileName(fileName) {
+            return fileName
+                .toLowerCase()                          // converter para minúsculas
+                .normalize('NFD')                       // normalizar caracteres acentuados
+                .replace(/[\u0300-\u036f]/g, '')       // remover acentos
+                .replace(/[^a-z0-9._-]/g, '_')         // substituir caracteres especiais por _
+                .replace(/_{2,}/g, '_')                // substituir múltiplos _ por um só
+                .replace(/^_+|_+$/g, '');              // remover _ do início e fim
+        }
+        
+        // Função para gerar código de evento no novo formato
+        function gerarCodigoEvento() {
+            const agora = new Date();
+            
+            // Formatar hora: HHMMSS
+            const horas = agora.getHours().toString().padStart(2, '0');
+            const minutos = agora.getMinutes().toString().padStart(2, '0');
+            const segundos = agora.getSeconds().toString().padStart(2, '0');
+            const horaFormatada = horas + minutos + segundos;
+            
+            // Formatar data: DDMMYY
+            const dia = agora.getDate().toString().padStart(2, '0');
+            const mes = (agora.getMonth() + 1).toString().padStart(2, '0');
+            const ano = agora.getFullYear().toString().slice(-2); // últimos 2 dígitos
+            const dataFormatada = dia + mes + ano;
+            
+            // Gerar código final: WL + HoraFormatada + DataFormatada + T (para terceiro)
+            return `WL${horaFormatada}${dataFormatada}T`;
+        }
+        
+        // Função para upload de arquivo para o bucket do Supabase
+        async function uploadArquivoParaBucket(file, pasta, nomeArquivo, tipo) {
+            try {
+                debugLog(`Fazendo upload do arquivo ${nomeArquivo} para a pasta ${pasta}`);
+                
+                // Mostrar status de upload
+                const statusElement = document.getElementById(`${tipo}_status`);
+                if (statusElement) {
+                    statusElement.className = 'upload-status uploading';
+                    statusElement.textContent = 'Enviando...';
+                }
+                
+                const filePath = `${pasta}/${nomeArquivo}`;
+                const result = await supabaseClient.uploadFileWithValidation(BUCKET_NAME, filePath, file);
+                
+                // Obter URL pública do arquivo
+                const publicUrl = await supabaseClient.getPublicUrl(BUCKET_NAME, filePath);
+                
+                if (statusElement) {
+                    statusElement.className = 'upload-status success';
+                    statusElement.textContent = 'Sucesso';
+                }
+                
+                debugLog(`Upload concluído com sucesso. URL: ${publicUrl}`);
+                return {
+                    path: filePath,
+                    fullPath: filePath,
+                    publicUrl: publicUrl
+                };
+            } catch (error) {
+                console.error('Erro no upload do arquivo:', error);
+                debugLog(`Erro no upload do arquivo: ${error.message}`);
+                
+                const statusElement = document.getElementById(`${tipo}_status`);
+                if (statusElement) {
+                    statusElement.className = 'upload-status error';
+                    statusElement.textContent = 'Erro';
+                }
+                
+                throw error;
+            }
+        }
+        
+        // Configurar preview de arquivos
+        function setupFilePreview(inputId, previewId, tipo, uploadBoxId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const uploadBox = document.getElementById(uploadBoxId);
+            
+            input.addEventListener('change', async function(e) {
+                debugLog(`Arquivo selecionado para ${tipo}: ${inputId}`);
+                
+                const files = Array.from(e.target.files);
+                debugLog(`Arquivos selecionados para ${tipo}: ${files.length}`);
+                
+                if (files.length === 0) {
+                    uploadBox.classList.remove('active', 'has-file');
+                    preview.innerHTML = '';
+                    preview.classList.remove('show');
+                    
+                    // Resetar status de upload
+                    const statusElement = document.getElementById(`${tipo}_status`);
+                    if (statusElement) {
+                        statusElement.className = 'upload-status';
+                        statusElement.textContent = '';
+                    }
+                    
+                    if (tipo === 'fotos') {
+                        arquivosCarregados.fotos = [];
+                    } else {
+                        arquivosCarregados[tipo] = null;
+                    }
+                    
+                    // Verificar estado do formulário após remover arquivo
+                    verificarEstadoFormulario();
+                    return;
+                }
+                
+                if (tipo !== 'fotos' && files.length > 1) {
+                    showError('Selecione apenas um arquivo para ' + tipo.toUpperCase());
+                    return;
+                }
+                
+                for (let file of files) {
+                    if (file.size > 10 * 1024 * 1024) { // 10MB
+                        showError(`Arquivo ${file.name} é muito grande. Máximo 10MB.`);
+                        return;
+                    }
+                }
+                
+                try {
+                    uploadBox.classList.add('active', 'has-file');
+                    preview.innerHTML = '';
+                    
+                    if (tipo === 'fotos') {
+                        if (files.length > 10) {
+                            showError('Máximo 10 fotos permitidas');
+                            return;
+                        }
+                        
+                        arquivosCarregados.fotos = [];
+                        for (let file of files) {
+                            // Sanitizar nome do arquivo
+                            const nomeSanitizado = sanitizeFileName(file.name);
+                            const extensao = file.name.split('.').pop();
+                            const nomeFinal = `${nomeSanitizado}.${extensao}`;
+                            
+                            // Gerar URL antecipada para uso nos webhooks
+                            const urlAntecipada = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${codigoEvento || 'EVENTO'}/fotos/${nomeFinal}`;
+                            
+                            arquivosCarregados.fotos.push({
+                                nome: file.name,
+                                nomeSanitizado: nomeFinal,
+                                tipo: file.type, // CORRIGIDO: file.type em vez de file.tipo
+                                tamanho: file.size,
+                                arquivo: file,
+                                url_arquivo: urlAntecipada // URL antecipada para uso nos webhooks
+                            });
+                            
+                            const fileItem = document.createElement('div');
+                            fileItem.className = 'file-item';
+                            fileItem.innerHTML = `
+                                <i class="fas fa-image" style="color: var(--welar-success);"></i>
+                                <div style="flex: 1;">
+                                    <div style="color: var(--welar-darkest); font-weight: 500;">${file.name}</div>
+                                    <div class="filename-info">Salvo como: ${nomeFinal}</div>
+                                </div>
+                                <small style="color: var(--welar-text);">${(file.size / 1024).toFixed(1)} KB</small>
+                                <button type="button" class="remove-file" onclick="removerArquivo('fotos', '${file.name}')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            preview.appendChild(fileItem);
+                        }
+                        debugLog(`${files.length} fotos carregadas`);
+                    } else {
+                        const file = files[0];
+                        
+                        // Sanitizar nome do arquivo
+                        const nomeSanitizado = sanitizeFileName(file.name);
+                        const extensao = file.name.split('.').pop();
+                        const nomeFinal = `${nomeSanitizado}.${extensao}`;
+                        
+                        // Gerar URL antecipada para uso nos webhooks
+                        const urlAntecipada = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${codigoEvento || 'EVENTO'}/documentos/${nomeFinal}`;
+                        
+                        arquivosCarregados[tipo] = {
+                            nome: file.name,
+                            nomeSanitizado: nomeFinal,
+                            tipo: file.type, // CORRIGIDO: file.type em vez de file.tipo
+                            tamanho: file.size,
+                            arquivo: file,
+                            url_arquivo: urlAntecipada // URL antecipada para uso nos webhooks
+                        };
+                        
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <i class="fas fa-file" style="color: var(--welar-success);"></i>
+                            <div style="flex: 1;">
+                                <div style="color: var(--welar-darkest); font-weight: 500;">${file.name}</div>
+                                <div class="filename-info">Salvo como: ${nomeFinal}</div>
+                            </div>
+                            <small style="color: var(--welar-text);">${(file.size / 1024).toFixed(1)} KB</small>
+                            <button type="button" class="remove-file" onclick="removerArquivo('${tipo}', null)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        preview.appendChild(fileItem);
+                        debugLog(`Arquivo ${tipo} carregado: ${file.name} (sanitizado: ${nomeFinal})`);
+                    }
+                    
+                    preview.classList.add('show');
+                    
+                    // Verificar estado do formulário após carregar arquivo
+                    verificarEstadoFormulario();
+                } catch (error) {
+                    console.error('Erro ao processar arquivo:', error);
+                    debugLog(`Erro ao processar arquivo: ${error.message}`);
+                    showError('Erro ao processar arquivo: ' + error.message);
+                    uploadBox.classList.remove('active', 'has-file');
+                }
+            });
+        }
+        
+        // Função para remover arquivo
+        function removerArquivo(tipo, nomeArquivo) {
+            debugLog(`Removendo arquivo ${tipo}: ${nomeArquivo || 'único'}`);
+            
+            if (tipo === 'fotos') {
+                arquivosCarregados.fotos = arquivosCarregados.fotos.filter(foto => foto.nome !== nomeArquivo);
+            } else {
+                arquivosCarregados[tipo] = null;
+            }
+            
+            // Atualizar a interface
+            const input = document.getElementById(`${tipo}_file`);
+            const preview = document.getElementById(`${tipo}_preview`);
+            const uploadBox = document.getElementById(`${tipo}_upload_box`);
+            
+            // Limpar input
+            input.value = '';
+            
+            // Se não há mais arquivos, limpar o preview
+            if ((tipo === 'fotos' && arquivosCarregados.fotos.length === 0) || 
+                (tipo !== 'fotos' && !arquivosCarregados[tipo])) {
+                uploadBox.classList.remove('active', 'has-file');
+                preview.innerHTML = '';
+                preview.classList.remove('show');
+                
+                // Resetar status de upload
+                const statusElement = document.getElementById(`${tipo}_status`);
+                if (statusElement) {
+                    statusElement.className = 'upload-status';
+                    statusElement.textContent = '';
+                }
+            } else {
+                // Recarregar o preview com os arquivos restantes
+                preview.innerHTML = '';
+                
+                if (tipo === 'fotos') {
+                    arquivosCarregados.fotos.forEach(foto => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <i class="fas fa-image" style="color: var(--welar-success);"></i>
+                            <div style="flex: 1;">
+                                <div style="color: var(--welar-darkest); font-weight: 500;">${foto.nome}</div>
+                                <div class="filename-info">Salvo como: ${foto.nomeSanitizado}</div>
+                            </div>
+                            <small style="color: var(--welar-text);">${(foto.tamanho / 1024).toFixed(1)} KB</small>
+                            <button type="button" class="remove-file" onclick="removerArquivo('fotos', '${foto.nome}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        preview.appendChild(fileItem);
+                    });
+                }
+            }
+            
+            // Verificar estado do formulário após remover arquivo
+            verificarEstadoFormulario();
+        }
+        
+        // Função para verificar o estado do formulário
+        function verificarEstadoFormulario() {
+            const submitBtn = document.getElementById('submitBtn');
+            const codigoEventoPrincipalInput = document.getElementById('codigo_evento_principal').value.trim();
+            const termo = document.getElementById('termo_acionamento').value.trim();
+            const consentimentoAnalista = document.getElementById('consentimento_analista').checked;
+            
+            // Verificar campos obrigatórios
+            const camposObrigatorios = {
+                codigoEventoPrincipal: codigoEventoPrincipalInput !== '',
+                termo: termo.length >= 50,
+                cnh: arquivosCarregados.cnh !== null,
+                crlv: arquivosCarregados.crlv !== null,
+                fotos: arquivosCarregados.fotos.length > 0,
+                consentimento: consentimentoAnalista
+            };
+            
+            // Verificar se todos os campos obrigatórios estão preenchidos
+            const todosPreenchidos = Object.values(camposObrigatorios).every(valor => valor === true);
+            
+            debugLog('Estado do formulário:', camposObrigatorios);
+            
+            if (todosPreenchidos) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('blocked');
+                updateValidationStatus('valid', 'Formulário pronto para envio!');
+            } else {
+                // Verificar quais campos estão faltando
+                const camposFaltando = Object.entries(camposObrigatorios)
+                    .filter(([_, valor]) => valor === false)
+                    .map(([campo, _]) => {
+                        switch(campo) {
+                            case 'codigoEventoPrincipal': return 'Código do evento principal';
+                            case 'termo': return 'Termo de acionamento (mín. 50 caracteres)';
+                            case 'cnh': return 'CNH do terceiro';
+                            case 'crlv': return 'CRLV do terceiro';
+                            case 'fotos': return 'Fotos do veículo do terceiro';
+                            case 'consentimento': return 'Termo de consentimento';
+                            default: return campo;
+                        }
+                    });
+                
+                submitBtn.disabled = true;
+                submitBtn.classList.add('blocked');
+                updateValidationStatus('invalid', `Campos faltando: ${camposFaltando.join(', ')}`);
+            }
+        }
+        
+        // Exibir mensagem de erro
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            debugLog(`Erro exibido: ${message}`);
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Exibir mensagem de sucesso
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            debugLog(`Sucesso exibido: ${message}`);
+        }
+        
+        // Atualizar status do webhook
+        function updateWebhookStatus(webhook, status, tempo = null) {
+            const statusElement = document.getElementById(`status-${webhook}`);
+            const timeElement = document.getElementById(`${webhook}-time`);
+            
+            if (!statusElement) return;
+            
+            const agora = new Date();
+            const tempoFormatado = tempo || agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            statusElement.className = `status-icon status-${status}`;
+            
+            switch(status) {
+                case 'processing':
+                    statusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    if (timeElement) timeElement.textContent = 'Processando...';
+                    break;
+                case 'success':
+                    statusElement.innerHTML = '<i class="fas fa-check"></i>';
+                    if (timeElement) timeElement.textContent = `✓ ${tempoFormatado}`;
+                    statusAnalise[webhook] = true;
+                    break;
+                case 'error':
+                    statusElement.innerHTML = '<i class="fas fa-times"></i>';
+                    if (timeElement) timeElement.textContent = `✗ Erro`;
+                    break;
+                default:
+                    statusElement.innerHTML = '<i class="fas fa-clock"></i>';
+                    if (timeElement) timeElement.textContent = 'Aguardando...';
+            }
+            
+            debugLog(`Status do webhook ${webhook} atualizado para: ${status}`);
+            atualizarProgressoGeral();
+        }
+        
+        // Atualizar progresso geral
+        function atualizarProgressoGeral() {
+            const totalEtapas = Object.keys(statusAnalise).length;
+            const etapasConcluidas = Object.values(statusAnalise).filter(status => status === true).length;
+            const porcentagem = Math.round((etapasConcluidas / totalEtapas) * 100);
+            
+            const progressFill = document.getElementById('overallProgress');
+            const progressPercentage = document.getElementById('progressPercentage');
+            
+            if (progressFill) progressFill.style.width = porcentagem + '%';
+            if (progressPercentage) progressPercentage.textContent = porcentagem + '%';
+            
+            debugLog(`Progresso geral atualizado: ${porcentagem}% (${etapasConcluidas}/${totalEtapas})`);
+        }
+        
+        // Salvar dados no Supabase
+        async function salvarNoSupabase() {
+            try {
+                const usuario = JSON.parse(localStorage.getItem('welar_user') || '{}');
+                debugLog(`Salvando dados no Supabase para o evento: ${codigoEvento}`);
+                debugLog(`ID do usuário: ${usuario.id}, Nome: ${usuario.nome}, Email: ${usuario.email}`);
+                
+                // Salvar evento de análise
+                try {
+                    debugLog('Salvando evento de análise');
+                    const eventoData = {
+                        codigo_evento: codigoEvento,
+                        analista_nome: usuario.nome,
+                        analista_email: usuario.email,
+                        categoria_evento: 'SINISTRO_TERCEIRO',
+                        decisao_final: 'PENDENTE',
+                        data_inicio_analise: new Date().toISOString(),
+                        status: 'DADOS_COLETADOS',
+                        data_criacao: new Date().toISOString(),
+                        versao_sistema: '3.1'
+                    };
+                    
+                    const evento = await supabaseClient.insert('eventos_analise', eventoData);
+                    debugLog('Evento salvo com sucesso');
+                } catch (error) {
+                    debugLog(`Erro ao salvar evento: ${error.message}`);
+                    throw error;
+                }
+                
+                // Salvar dados na tabela de terceiros
+                debugLog('Salvando dados na tabela consolidacao_terceiros');
+                const terceiroData = {
+                    codigo_evento: codigoEvento,
+                    codigo_evento_principal: codigoEventoPrincipal,
+                    termo_relato_associado: document.getElementById('termo_acionamento').value,
+                    meta_analista_responsavel: usuario.nome,
+                    meta_email_analista: usuario.email,
+                    meta_data_analise: new Date().toISOString(),
+                    meta_versao_sistema: '3.1'
+                };
+                
+                const terceiro = await supabaseClient.insert('consolidacao_terceiros', terceiroData);
+                debugLog('Dados do terceiro salvos com sucesso');
+                
+                // Salvar dados na tabela dados_iniciais_formulario
+                try {
+                    debugLog('Salvando dados na tabela dados_iniciais_formulario');
+                    
+                    // Coletar todos os dados do formulário
+                    const dadosFormulario = {
+                        codigo_evento: codigoEvento,
+                        analista_nome: usuario.nome,
+                        analista_email: usuario.email,
+                        termo_acionamento: document.getElementById('termo_acionamento').value,
+                        dados_formulario: JSON.stringify({
+                            codigo_evento_principal: codigoEventoPrincipal,
+                            tipo_analise: 'TERCEIRO',
+                            data_criacao: new Date().toISOString()
+                        }),
+                        analise_terceiro: true,
+                        data_criacao: new Date().toISOString()
+                    };
+                    
+                    const dadosIniciais = await supabaseClient.insert('dados_iniciais_formulario', dadosFormulario);
+                    debugLog('Dados iniciais do formulário salvos com sucesso');
+                } catch (error) {
+                    debugLog(`Erro ao salvar dados iniciais do formulário: ${error.message}`);
+                    throw error;
+                }
+                
+                // Upload dos arquivos para o bucket e salvar metadados
+                // Formatar tipo de arquivo com verificação de segurança
+                const formatarTipoArquivo = (mimeType) => {
+                    if (!mimeType) return 'UNKNOWN';
+                    return mimeType.toUpperCase()
+                        .replace('IMAGE/', '')
+                        .replace('APPLICATION/', '')
+                        .replace('JPEG', 'JPG');
+                };
+                
+                const arquivosParaSalvar = [];
+                
+                // Upload da CNH do Terceiro
+                if (arquivosCarregados.cnh) {
+                    debugLog(`Fazendo upload da CNH do terceiro: ${arquivosCarregados.cnh.nome}`);
+                    const cnhUpload = await uploadArquivoParaBucket(
+                        arquivosCarregados.cnh.arquivo,
+                        `${codigoEvento}/documentos`,
+                        `CNH_TERCEIRO_${Date.now()}_${arquivosCarregados.cnh.nomeSanitizado}`,
+                        'cnh'
+                    );
+                    
+                    // Atualizar a URL no objeto do arquivo
+                    arquivosCarregados.cnh.url_arquivo = cnhUpload.publicUrl;
+                    
+                    arquivosParaSalvar.push({
+                        codigo_evento: codigoEvento,
+                        nome_arquivo: arquivosCarregados.cnh.nome,
+                        tipo_arquivo: formatarTipoArquivo(arquivosCarregados.cnh.tipo),
+                        categoria_arquivo: 'CNH',
+                        tamanho_bytes: arquivosCarregados.cnh.tamanho,
+                        url_arquivo: cnhUpload.publicUrl,
+                        hash_arquivo: cnhUpload.path.split('/').pop(),
+                        ordem_upload: 1
+                    });
+                }
+                
+                // Upload do CRLV do Terceiro
+                if (arquivosCarregados.crlv) {
+                    debugLog(`Fazendo upload do CRLV do terceiro: ${arquivosCarregados.crlv.nome}`);
+                    const crlvUpload = await uploadArquivoParaBucket(
+                        arquivosCarregados.crlv.arquivo,
+                        `${codigoEvento}/documentos`,
+                        `CRLV_TERCEIRO_${Date.now()}_${arquivosCarregados.crlv.nomeSanitizado}`,
+                        'crlv'
+                    );
+                    
+                    // Atualizar a URL no objeto do arquivo
+                    arquivosCarregados.crlv.url_arquivo = crlvUpload.publicUrl;
+                    
+                    arquivosParaSalvar.push({
+                        codigo_evento: codigoEvento,
+                        nome_arquivo: arquivosCarregados.crlv.nome,
+                        tipo_arquivo: formatarTipoArquivo(arquivosCarregados.crlv.tipo),
+                        categoria_arquivo: 'CRLV',
+                        tamanho_bytes: arquivosCarregados.crlv.tamanho,
+                        url_arquivo: crlvUpload.publicUrl,
+                        hash_arquivo: crlvUpload.path.split('/').pop(),
+                        ordem_upload: 2
+                    });
+                }
+                
+                // Upload das fotos
+                for (let i = 0; i < arquivosCarregados.fotos.length; i++) {
+                    const foto = arquivosCarregados.fotos[i];
+                    debugLog(`Fazendo upload da foto ${i + 1}: ${foto.nome}`);
+                    
+                    const fotoUpload = await uploadArquivoParaBucket(
+                        foto.arquivo,
+                        `${codigoEvento}/fotos`,
+                        `FOTO_TERCEIRO_${i + 1}_${Date.now()}_${foto.nomeSanitizado}`,
+                        'fotos'
+                    );
+                    
+                    // Atualizar a URL no objeto do arquivo
+                    arquivosCarregados.fotos[i].url_arquivo = fotoUpload.publicUrl;
+                    
+                    arquivosParaSalvar.push({
+                        codigo_evento: codigoEvento,
+                        nome_arquivo: foto.nome,
+                        tipo_arquivo: formatarTipoArquivo(foto.tipo),
+                        categoria_arquivo: 'FOTO_VEICULO',
+                        tamanho_bytes: foto.tamanho,
+                        url_arquivo: fotoUpload.publicUrl,
+                        hash_arquivo: fotoUpload.path.split('/').pop(),
+                        ordem_upload: 3 + i
+                    });
+                }
+                
+                if (arquivosParaSalvar.length > 0) {
+                    debugLog(`Salvando ${arquivosParaSalvar.length} metadados de arquivos no Supabase`);
+                    const arquivos = await supabaseClient.insert('arquivos_originais', arquivosParaSalvar);
+                    debugLog(`${arquivos.length} metadados de arquivos salvos com sucesso`);
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Erro ao salvar no Supabase:', error);
+                debugLog(`Erro ao salvar no Supabase: ${error.message}`);
+                
+                // Verificar se é um erro de RLS
+                if (error.message && (
+                    error.message.includes('row-level security policy') ||
+                    error.message.includes('RLS') ||
+                    error.code === '42501'
+                )) {
+                    debugLog('Erro de RLS detectado, exibindo aviso ao usuário');
+                    document.getElementById('rlsWarning').style.display = 'block';
+                }
+                
+                throw error;
+            }
+        }
+        
+        // Enviar para webhook
+        async function enviarParaWebhook(url, dados, nomeWebhook) {
+            try {
+                if (nomeWebhook) {
+                    updateWebhookStatus(nomeWebhook, 'processing');
+                    debugLog(`Enviando para webhook ${nomeWebhook}: ${url}`);
+                    debugLog(`Dados enviados: ${JSON.stringify(dados, null, 2)}`);
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-WELAR-Version': '3.1',
+                        'X-WELAR-Environment': 'TESTE'
+                    },
+                    body: JSON.stringify({
+                        ...dados,
+                        metadata: {
+                            timestamp: new Date().toISOString(),
+                            versao_sistema: '3.1',
+                            ambiente: 'TESTE'
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+                }
+                
+                const resultado = await response.json();
+                
+                if (nomeWebhook) {
+                    updateWebhookStatus(nomeWebhook, 'success');
+                    debugLog(`Webhook ${nomeWebhook} respondido com sucesso: ${JSON.stringify(resultado)}`);
+                }
+                
+                return resultado;
+            } catch (error) {
+                console.error(`Erro no webhook ${nomeWebhook || url}:`, error);
+                debugLog(`Erro no webhook ${nomeWebhook || url}: ${error.message}`);
+                if (nomeWebhook) updateWebhookStatus(nomeWebhook, 'error');
+                throw error;
+            }
+        }
+        
+        // Distribuir fotos para os webhooks
+        function distribuirFotos() {
+            const fotosDistribuidas = Array(10).fill(null).map(() => []);
+            
+            arquivosCarregados.fotos.forEach((foto, index) => {
+                const webhookIndex = index % 10;
+                fotosDistribuidas[webhookIndex].push({
+                    ordem: index + 1,
+                    nome: foto.nome,
+                    nome_sanitizado: foto.nomeSanitizado,
+                    url_arquivo: foto.url_arquivo,
+                    mime_type: foto.tipo,
+                    tamanho_bytes: foto.tamanho
+                });
+            });
+            
+            debugLog(`Fotos distribuídas em ${fotosDistribuidas.length} lotes`);
+            return fotosDistribuidas;
+        }
+        
+        // Processar análises
+        async function processarAnalises() {
+            try {
+                debugLog('Iniciando processamento das análises');
+                
+                // Enviar CNH e CRLV do terceiro simultaneamente
+                const documentosPromises = [];
+                
+                if (arquivosCarregados.cnh) {
+                    debugLog('Enviando CNH do terceiro para análise');
+                    documentosPromises.push(enviarParaWebhook(WEBHOOKS.analise_cnh, {
+                        codigo_evento: codigoEvento,
+                        arquivo_nome: arquivosCarregados.cnh.nome,
+                        arquivo_nome_sanitizado: arquivosCarregados.cnh.nomeSanitizado,
+                        arquivo_mime_type: arquivosCarregados.cnh.tipo,
+                        url_arquivo: arquivosCarregados.cnh.url_arquivo,
+                        categoria: 'CNH_TERCEIRO'
+                    }));
+                }
+                
+                if (arquivosCarregados.crlv) {
+                    debugLog('Enviando CRLV do terceiro para análise');
+                    documentosPromises.push(enviarParaWebhook(WEBHOOKS.analise_crlv, {
+                        codigo_evento: codigoEvento,
+                        arquivo_nome: arquivosCarregados.crlv.nome,
+                        arquivo_nome_sanitizado: arquivosCarregados.crlv.nomeSanitizado,
+                        arquivo_mime_type: arquivosCarregados.crlv.tipo,
+                        url_arquivo: arquivosCarregados.crlv.url_arquivo,
+                        categoria: 'CRLV_TERCEIRO'
+                    }));
+                }
+                
+                // Aguardar a conclusão de todos os documentos
+                if (documentosPromises.length > 0) {
+                    updateWebhookStatus('documentos', 'processing');
+                    await Promise.allSettled(documentosPromises);
+                    updateWebhookStatus('documentos', 'success');
+                    debugLog('Análise de documentos concluída');
+                }
+                
+                // Enviar fotos
+                const fotosDistribuidas = distribuirFotos();
+                const fotosPromises = [];
+                
+                if (arquivosCarregados.fotos.length > 0) {
+                    debugLog('Enviando fotos para análise');
+                    updateWebhookStatus('fotos', 'processing');
+                    
+                    for (let i = 0; i < fotosDistribuidas.length; i++) {
+                        const fotos = fotosDistribuidas[i];
+                        if (fotos.length > 0) {
+                            debugLog(`Enviando lote ${i + 1} com ${fotos.length} fotos para ${WEBHOOKS[`analise_img${i + 1}`]}`);
+                            const promise = enviarParaWebhook(WEBHOOKS[`analise_img${i + 1}`], {
+                                codigo_evento: codigoEvento,
+                                total_fotos_neste_lote: fotos.length,
+                                fotos: fotos,
+                                webhook_origem: 'analise-terceiro',
+                                timestamp: new Date().toISOString()
+                            });
+                            fotosPromises.push(promise);
+                        }
+                    }
+                    
+                    const fotosResultados = await Promise.allSettled(fotosPromises);
+                    
+                    // Verificar se todas as fotos foram processadas com sucesso ou se apenas uma falhou
+                    const fotosSucesso = fotosResultados.filter(r => r.status === 'fulfilled').length;
+                    const fotosErro = fotosResultados.filter(r => r.status === 'rejected').length;
+                    
+                    // Se apenas uma foto falhou, ainda consideramos como sucesso
+                    if (fotosErro <= 1 && fotosSucesso > 0) {
+                        updateWebhookStatus('fotos', 'success');
+                        debugLog(`${fotosSucesso} fotos enviadas com sucesso, ${fotosErro} foto com erro (aceitável)`);
+                    } else if (fotosSucesso > 0) {
+                        updateWebhookStatus('fotos', 'success');
+                        debugLog(`${fotosSucesso} fotos enviadas com sucesso, ${fotosErro} fotos com erro`);
+                    } else {
+                        updateWebhookStatus('fotos', 'error');
+                        debugLog('Todas as fotos falharam no envio');
+                    }
+                }
+                
+                debugLog('Processamento inicial concluído');
+            } catch (error) {
+                console.error('Erro no processamento das análises:', error);
+                debugLog(`Erro no processamento das análises: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        // Acionar IA final
+        async function acionarIaFinal() {
+            if (!codigoEvento) return;
+            
+            debugLog('Acionando IA Final para análise de terceiros');
+            updateWebhookStatus('consolidacao', 'processing');
+            
+            try {
+                // Obter o valor do campo de input diretamente para garantir que temos o valor mais recente
+                const inputCodigoPrincipal = document.getElementById('codigo_evento_principal').value.trim();
+                
+                // Verificar se temos um código do evento principal
+                if (!inputCodigoPrincipal) {
+                    debugLog('AVISO: Código do evento principal não foi informado!');
+                    updateWebhookStatus('consolidacao', 'error');
+                    showError('Código do evento principal não foi informado. Não é possível continuar com a análise.');
+                    return;
+                }
+                
+                debugLog(`Enviando para IA Final - código_evento: ${codigoEvento}, código_evento_principal: ${inputCodigoPrincipal}`);
+                
+                await enviarParaWebhook(WEBHOOKS.ia_final, { 
+                    codigo_evento: codigoEvento,
+                    codigo_evento_principal: inputCodigoPrincipal, // Enviando o código do evento principal (associado)
+                    timestamp: new Date().toISOString()
+                });
+                
+                debugLog('Webhook da IA Final acionado com sucesso');
+            } catch (error) {
+                console.error('Erro ao acionar webhook da IA Final:', error);
+                debugLog(`Erro ao acionar webhook da IA Final: ${error.message}`);
+                updateWebhookStatus('consolidacao', 'error');
+                showError('Falha ao iniciar a consolidação final da análise.');
+            }
+        }
+        
+        // Monitorar análises
+        async function monitorarAnalises() {
+            if (!codigoEvento) return;
+            
+            debugLog(`Monitorando análises para o evento: ${codigoEvento}`);
+            
+            try {
+                const eventoData = await supabaseClient.select('eventos_analise', `codigo_evento=eq.${codigoEvento}`);
+                
+                if (!eventoData || eventoData.length === 0) {
+                    debugLog('Evento não encontrado');
+                    return;
+                }
+                
+                debugLog(`Status atual do evento: ${eventoData[0].status}`);
+                
+                const consolidacaoData = await supabaseClient.select('consolidacao_terceiros', `codigo_evento=eq.${codigoEvento}`);
+                
+                if (consolidacaoData && consolidacaoData.length > 0 && consolidacaoData[0].status_beneficio) {
+                    debugLog('Consolidação final detectada. Redirecionando...');
+                    updateWebhookStatus('consolidacao', 'success', new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+                    
+                    // Limpar intervalos
+                    intervalosMonitoramento.forEach(interval => clearInterval(interval));
+                    
+                    const successDiv = document.getElementById('successMessage');
+                    successDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                            <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--welar-success);"></i>
+                            <div>
+                                <div style="font-size: 1.2rem; font-weight: 700;">🎉 Análise Completa!</div>
+                                <div style="font-size: 0.9rem; margin-top: 5px;">Redirecionando para a página de resultados em <span id="countdown">10</span>s...</div>
+                            </div>
+                        </div>
+                    `;
+                    successDiv.style.display = 'block';
+                    
+                    let countdown = 10;
+                    const countdownElement = document.getElementById('countdown');
+                    
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        if (countdownElement) countdownElement.textContent = countdown;
+                        if (countdown <= 0) clearInterval(countdownInterval);
+                    }, 1000);
+                    
+                    setTimeout(() => {
+                        const urlExibicao = `${N8N_URLS.exibeAnaliseTerceiro}?codigo_evento=${codigoEvento}`;
+                        window.location.href = urlExibicao;
+                    }, 10000);
+                    
+                    return;
+                }
+                
+                // Verificar se todos os webhooks iniciais foram concluídos
+                const iniciaisConcluidas = statusAnalise.documentos && statusAnalise.fotos;
+                
+                if (iniciaisConcluidas && !finalAiTriggered) {
+                    finalAiTriggered = true;
+                    debugLog('Iniciando IA Final');
+                    await acionarIaFinal();
+                }
+                
+                if (eventoData[0].status === 'ERRO_PROCESSAMENTO') {
+                    intervalosMonitoramento.forEach(interval => clearInterval(interval));
+                    showError('Erro no processamento. Algumas análises falharam.');
+                }
+            } catch (error) {
+                console.error('Erro ao monitorar análises:', error);
+                debugLog(`Erro ao monitorar análises: ${error.message}`);
+            }
+        }
+        
+        // Iniciar monitoramento
+        function iniciarMonitoramento() {
+            debugLog('Iniciando monitoramento das análises');
+            const interval = setInterval(monitorarAnalises, 10000);
+            intervalosMonitoramento.push(interval);
+            
+            // Executar imediatamente após 5 segundos
+            setTimeout(monitorarAnalises, 5000);
+        }
+        
+        // Validar formulário
+        function validarFormulario() {
+            const codigoEventoPrincipalInput = document.getElementById('codigo_evento_principal').value.trim();
+            const termo = document.getElementById('termo_acionamento').value.trim();
+            const consentimentoAnalista = document.getElementById('consentimento_analista').checked;
+            
+            debugLog('Validando formulário');
+            
+            if (!codigoEventoPrincipalInput) {
+                showError('O código do evento principal é obrigatório');
+                return false;
+            }
+            
+            if (termo.length < 50) {
+                showError('O termo de acionamento deve ter pelo menos 50 caracteres');
+                return false;
+            }
+            
+            if (!arquivosCarregados.cnh) {
+                showError('CNH do terceiro é obrigatória');
+                return false;
+            }
+            
+            if (!arquivosCarregados.crlv) {
+                showError('CRLV do terceiro é obrigatório');
+                return false;
+            }
+            
+            if (arquivosCarregados.fotos.length === 0) {
+                showError('Pelo menos uma foto do veículo do terceiro é obrigatória');
+                return false;
+            }
+            
+            if (!consentimentoAnalista) {
+                showError('Você precisa concordar com o Termo de Consentimento do Analista');
+                return false;
+            }
+            
+            debugLog('Formulário validado com sucesso');
+            return true;
+        }
+        
+        // Nova análise
+        function novaAnalise() {
+            debugLog('Iniciando nova análise');
+            intervalosMonitoramento.forEach(interval => clearInterval(interval));
+            intervalosMonitoramento = [];
+            
+            document.getElementById('analiseForm').reset();
+            
+            arquivosCarregados = { cnh: null, crlv: null, fotos: [] };
+            statusAnalise = { documentos: false, fotos: false, consolidacao: false };
+            finalAiTriggered = false;
+            
+            document.querySelectorAll('.file-preview').forEach(p => { 
+                p.innerHTML = ''; 
+                p.classList.remove('show'); 
+            });
+            
+            document.querySelectorAll('.upload-box').forEach(b => b.classList.remove('active', 'has-file'));
+            
+            document.querySelectorAll('.status-icon').forEach(i => { 
+                i.className = 'status-icon status-waiting'; 
+                i.innerHTML = '<i class="fas fa-clock"></i>'; 
+            });
+            
+            document.querySelectorAll('.upload-status').forEach(s => {
+                s.className = 'upload-status';
+                s.textContent = '';
+            });
+            
+            document.getElementById('webhookStatus').style.display = 'none';
+            document.getElementById('finalActions').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('rlsWarning').style.display = 'none';
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('blocked');
+            submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Iniciar Análise de Terceiro';
+            
+            codigoEvento = '';
+            codigoEventoPrincipal = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Verificar estado do formulário
+            verificarEstadoFormulario();
+        }
+        
+        // Ir para home
+        function irParaHome() {
+            debugLog('Redirecionando para home');
+            intervalosMonitoramento.forEach(interval => clearInterval(interval));
+            window.location.href = N8N_URLS.home;
+        }
+        
+        // Ir para análise do associado
+        function irParaAnaliseAssociado() {
+            debugLog('Redirecionando para análise do associado');
+            window.location.href = N8N_URLS.analiseAssociado;
+        }
+        
+        // Verificar autenticação
+        async function verificarAutenticacao() {
+            const token = localStorage.getItem('welar_session');
+            const usuario = JSON.parse(localStorage.getItem('welar_user') || '{}');
+            
+            debugLog(`Verificando autenticação. Token: ${token ? 'Presente' : 'Ausente'}, Usuário: ${usuario.id || 'Não identificado'}`);
+            
+            if (!token || !usuario.id) {
+                debugLog('Token ou usuário ausente');
+                updateAuthStatus('error', 'Não autenticado');
+                
+                // Aumentar o tempo antes do redirecionamento para permitir diagnóstico
+                debugLog('Redirecionando para login em 10 segundos...');
+                authCheckTimeout = setTimeout(() => {
+                    window.location.href = N8N_URLS.login;
+                }, 10000);
+                
+                return null;
+            }
+            
+            try {
+                updateAuthStatus('', 'Verificando sessão no Supabase...');
+                
+                const sessao = await supabaseClient.select('sessoes_usuario', 
+                    `token_sessao=eq.${token}&ativa=eq.true&usuario_id=eq.${usuario.id}&data_expiracao=gte.${new Date().toISOString()}`
+                );
+                
+                if (!sessao || sessao.length === 0) {
+                    debugLog('Sessão não encontrada ou expirada');
+                    updateAuthStatus('error', 'Sessão expirada');
+                    localStorage.removeItem('welar_session');
+                    localStorage.removeItem('welar_user');
+                    
+                    // Aumentar tempo antes do redirecionamento
+                    authCheckTimeout = setTimeout(() => {
+                        window.location.href = N8N_URLS.login;
+                    }, 10000);
+                    
+                    return null;
+                }
+                
+                // Atualizar último acesso
+                await supabaseClient.update('sessoes_usuario', 
+                    { data_ultimo_acesso: new Date().toISOString() }, 
+                    `id=eq.${sessao[0].id}`
+                );
+                
+                updateAuthStatus('authenticated', `${usuario.nome} (${usuario.email})`);
+                debugLog(`Usuário autenticado: ${usuario.nome} (${usuario.email})`);
+                return usuario;
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                debugLog(`Erro ao verificar autenticação: ${error.message}`);
+                updateAuthStatus('error', 'Erro na verificação');
+                
+                // Aumentar tempo antes do redirecionamento
+                authCheckTimeout = setTimeout(() => {
+                    window.location.href = N8N_URLS.login;
+                }, 10000);
+                
+                return null;
+            }
+        }
+        
+        // Inicialização ao carregar a página
+        document.addEventListener('DOMContentLoaded', async function() {
+            debugLog('Página carregada, iniciando verificação de autenticação');
+            
+            // Verificar autenticação
+            const usuario = await verificarAutenticacao();
+            
+            if (usuario) {
+                debugLog(`Usuário autenticado: ${usuario.nome} (${usuario.email})`);
+                
+                // Preencher dados do usuário
+                document.getElementById('analista_nome').value = usuario.nome;
+                document.getElementById('analista_email').value = usuario.email;
+                
+                // Configurar upload de arquivos
+                setupFilePreview('cnh_file', 'cnh_preview', 'cnh', 'cnh_upload_box');
+                setupFilePreview('crlv_file', 'crlv_preview', 'crlv', 'crlv_upload_box');
+                setupFilePreview('fotos_veiculo', 'fotos_preview', 'fotos', 'fotos_upload_box');
+                
+                // Configurar envio do formulário
+                document.getElementById('analiseForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Esconder aviso de RLS
+                    document.getElementById('rlsWarning').style.display = 'none';
+                    
+                    if (!validarFormulario()) return;
+                    
+                    codigoEvento = gerarCodigoEvento();
+                    // Garantir que a variável global seja atualizada com o valor do input
+                    codigoEventoPrincipal = document.getElementById('codigo_evento_principal').value.trim();
+                    finalAiTriggered = false;
+                    
+                    debugLog(`Iniciando nova análise de terceiros com código: ${codigoEvento}`);
+                    debugLog(`Vinculado ao evento principal: ${codigoEventoPrincipal}`);
+                    
+                    const submitBtn = document.getElementById('submitBtn');
+                    const loadingSpinner = document.getElementById('loadingSpinner');
+                    
+                    try {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+                        loadingSpinner.style.display = 'block';
+                        document.getElementById('webhookStatus').style.display = 'block';
+                        
+                        // Salvar dados no Supabase
+                        debugLog('Salvando dados no Supabase');
+                        await salvarNoSupabase();
+                        
+                        // Processar análises
+                        debugLog('Iniciando processamento das análises');
+                        await processarAnalises();
+                        
+                        loadingSpinner.style.display = 'none';
+                        showSuccess(`Análises iniciais enviadas! Código: ${codigoEvento}. Aguardando conclusão...`);
+                        
+                        // Iniciar monitoramento
+                        debugLog('Iniciando monitoramento');
+                        iniciarMonitoramento();
+                        document.getElementById('finalActions').style.display = 'flex';
+                    } catch (error) {
+                        console.error('Erro no envio:', error);
+                        debugLog(`Erro no envio: ${error.message}`);
+                        loadingSpinner.style.display = 'none';
+                        showError('Erro ao processar formulário: ' + error.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Iniciar Análise de Terceiro';
+                        
+                        // Verificar estado do formulário após erro
+                        verificarEstadoFormulario();
+                    }
+                });
+                
+                // Configurar validação do termo de acionamento
+                const termoTextarea = document.getElementById('termo_acionamento');
+                const termoCount = document.getElementById('termoCount');
+                const termoValidation = document.getElementById('termoValidation');
+                
+                termoTextarea.addEventListener('input', function() {
+                    const count = this.value.length;
+                    const isValid = count >= 50;
+                    
+                    if (termoCount) termoCount.textContent = count;
+                    
+                    if (this.value && !isValid) {
+                        this.style.borderColor = 'var(--welar-warning)';
+                        if (termoValidation) {
+                            termoValidation.textContent = 'Mínimo de 50 caracteres';
+                            termoValidation.classList.remove('valid');
+                        }
+                    } else if (isValid) {
+                        this.style.borderColor = 'var(--welar-success)';
+                        if (termoValidation) {
+                            termoValidation.textContent = 'Validado';
+                            termoValidation.classList.add('valid');
+                        }
+                    } else {
+                        this.style.borderColor = 'var(--welar-border)';
+                        if (termoValidation) {
+                            termoValidation.textContent = 'Mínimo de 50 caracteres';
+                            termoValidation.classList.remove('valid');
+                        }
+                    }
+                    
+                    // Verificar estado do formulário após digitar
+                    verificarEstadoFormulario();
+                });
+                
+                // Adicionar listeners para os campos obrigatórios
+                document.getElementById('codigo_evento_principal').addEventListener('input', verificarEstadoFormulario);
+                document.getElementById('consentimento_analista').addEventListener('change', verificarEstadoFormulario);
+                
+                // Mostrar informações de autenticação
+                mostrarInfoAutenticacao();
+                
+                // Verificar estado inicial do formulário
+                verificarEstadoFormulario();
+            }
+        });
+    </script>
+</body>
+</html>
